@@ -254,6 +254,9 @@ footer a:hover{color:#fff}
   .plan.pop{transform:none}
   .side{flex-direction:row;overflow-x:auto}
   .chapter .bar{display:none}
+  .kpis{grid-template-columns:1fr 1fr}
+  .kpis .card{padding:16px}
+  .kpis .kpi{font-size:1.6rem}
 }
 </style>
 </head>
@@ -271,13 +274,13 @@ footer a:hover{color:#fff}
       <a href="#/subjects">Subjects</a><a href="#/how">How it works</a><a href="#/pricing">Pricing</a><a href="#/parents">For parents</a><a href="#/faq">FAQ</a>
     </nav>
     <div class="nav-cta">
-      <a class="btn btn-ghost btn-sm hide-m" href="#/student">Student login</a>
+      <a class="btn btn-ghost btn-sm hide-m" href="#/login">Log in</a>
       <a class="btn btn-amber btn-sm" href="#/try">Try free</a>
       <button class="burger" aria-label="Menu" onclick="document.querySelector('.mobile-menu').classList.toggle('open')">☰</button>
     </div>
   </div>
   <div class="mobile-menu" onclick="this.classList.remove('open')">
-    <a href="#/subjects">Subjects</a><a href="#/how">How it works</a><a href="#/pricing">Pricing</a><a href="#/parents">For parents</a><a href="#/student">Student login</a><a href="#/faq">FAQ</a><a href="#/about">About</a>
+    <a href="#/subjects">Subjects</a><a href="#/how">How it works</a><a href="#/pricing">Pricing</a><a href="#/parents">For parents</a><a id="m-login" href="#/login">Log in</a><a href="#/faq">FAQ</a><a href="#/about">About</a>
   </div>
 </header>
 
@@ -293,7 +296,7 @@ footer a:hover{color:#fff}
       </div>
       <div><h4>Middle school</h4><div id="f-ms"></div></div>
       <div><h4>High school</h4><div id="f-hs"></div></div>
-      <div><h4>Company</h4><a href="#/how">How it works</a><a href="#/pricing">Pricing</a><a href="#/parents">For parents</a><a href="#/about">About</a><a href="#/faq">FAQ</a><a href="#/student">Student login</a></div>
+      <div><h4>Company</h4><a href="#/how">How it works</a><a href="#/pricing">Pricing</a><a href="#/parents">For parents</a><a href="#/about">About</a><a href="#/faq">FAQ</a><a id="f-login" href="#/login">Log in</a></div>
     </div>
     <div class="legal"><span>© 2026 Study Buddy Texas</span><span>Privacy · Terms · Accessibility</span></div>
   </div>
@@ -646,24 +649,150 @@ function bindPricing(){const box=$("#plans");if(!box)return;
  $("#lvl").onclick=e=>{const l=e.target.dataset.l;if(!l)return;$("#lvl").querySelectorAll("button").forEach(b=>b.classList.toggle("on",b===e.target));draw(l)};draw("ms");
  const k=$("#kids"),kp=$("#kplan");const up=()=>{const n=+k.value,p=+kp.value,tot=p+(n-1)*p*0.85;$("#kv").textContent=n;$("#ktot").textContent="$"+tot.toFixed(2);$("#ksave").textContent="$"+(n*p-tot).toFixed(2)};k.oninput=kp.oninput=up;up()}
 
-Pages.parents = () => `<section><div class="wrap">
-  <div class="center"><div class="eyebrow">Parent dashboard · preview</div><h1>Know how they're doing, without reading every chat</h1></div>
-  ${note("A parent dashboard preview sells the Standard plan's weekly summary better than a checkmark in a pricing table.")}
-  <div class="dash" style="margin-top:30px">
-   <div class="side"><div style="font-weight:700;color:#fff;padding:6px 12px 12px">The Garcia family</div><a class="on" data-kid="0">👧 Maya · Grade 7</a><a data-kid="1">👦 Leo · Grade 10</a><a onclick="toast('Concept preview: billing lives here')">💳 Billing</a><a onclick="toast('Concept preview: support@studybuddytx.com')">🙋 Support</a></div>
-   <div id="pd"></div>
+/* ---------- demo accounts and session ---------- */
+const DEMO = {parentEmail:"parent@studybuddytx.com", parentPin:"2468", students:{"1234":0,"5678":1}};
+const KIDS=[
+ {n:"Maya",g:"Grade 7",lvl:"ms",plan:"Standard",price:39,pin:"1234",hrs:"3h 40m",q:"9/11",streak:5,xp:1240,
+  bars:[40,75,30,90,55,20,65],subs:[["ms-math",72,2],["ms-ela",58,3],["ms-sci",35,1]],
+  win:"Solved two-step equations on her own. Quiz score up from 2/3 to 3/3.",next:"Percent problems: mixing up \"of\" and \"off\".",
+  warm:"4x + 6 = 30",lastTopic:"two-step equations"},
+ {n:"Leo",g:"Grade 10",lvl:"hs",plan:"Premium",price:59,pin:"5678",hrs:"5h 10m",q:"14/18",streak:3,xp:2085,
+  bars:[60,30,80,70,45,90,25],subs:[["algebra-2",64,2],["chemistry",51,3],["english-2",77,1]],
+  win:"Balanced chemical equations on the first try three times this week.",next:"Logarithm rules before Friday's quiz. SAT practice set 2 is ready.",
+  warm:"5x - 7 = 38",lastTopic:"solving equations before logarithms"}
+];
+let SESSION=null;
+try{SESSION=JSON.parse(sessionStorage.getItem("sbtx_session")||"null")}catch(e){}
+function saveSession(s){SESSION=s;try{s?sessionStorage.setItem("sbtx_session",JSON.stringify(s)):sessionStorage.removeItem("sbtx_session")}catch(e){}updateNav()}
+function logout(){saveSession(null);toast("You're logged out");location.hash="#/login"}
+window.logout=logout;
+function updateNav(){
+  const a=document.querySelector(".nav-cta a.btn-ghost"), m=document.getElementById("m-login"), f=document.getElementById("f-login");
+  let href="#/login",txt="Log in";
+  if(SESSION&&SESSION.role==="student"){href="#/student";txt=KIDS[SESSION.kid].n+"'s dashboard"}
+  if(SESSION&&SESSION.role==="parent"){href="#/parent";txt="Parent dashboard"}
+  [a,m,f].forEach(el=>{if(el){el.href=href;el.textContent=txt}});
+}
+
+/* ---------- marketing page for parents ---------- */
+Pages.parents = () => `<section><div class="wrap grid g2" style="gap:48px;align-items:center">
+  <div><div class="eyebrow">For parents</div><h1>Know how they're doing, without reading every chat</h1>
+   <p class="lead">Your parent dashboard shows time spent, quiz results, wins and what to practice next, for every child on your account. Full chat transcripts are never shared.</p>
+   <ul class="muted" style="padding-left:18px;line-height:1.9"><li>One account for all your kids, with siblings 15% off</li><li>A simple 4-digit PIN for each student</li><li>A weekly summary in your inbox</li><li>A real person for billing questions</li></ul>
+   ${note("Parents can try the real dashboard before buying. The demo login lets the founder click through both sides of the product.")}
+   <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:18px"><a class="btn btn-amber" href="#/login?parent">Open the parent demo</a><a class="btn btn-ghost" href="#/pricing">See plans</a></div>
+  </div>${summaryCard()}</div></section>
+<section><div class="wrap">${finalCTA()}</div></section>`;
+
+/* ---------- login ---------- */
+Pages.login = (_,q) => { const tab=q==="parent"?"parent":"student"; return `<section><div class="wrap">
+ <div class="card" style="max-width:480px;margin:0 auto">
+  <div class="center"><div class="avatar" style="margin:0 auto 12px;width:56px;height:56px;font-size:20px">SB</div><h2>Welcome back</h2></div>
+  <div class="toggle" id="lt" style="display:flex;margin:14px 0 22px"><button style="flex:1" data-t="student" class="${tab==="student"?"on":""}">I'm a student</button><button style="flex:1" data-t="parent" class="${tab==="parent"?"on":""}">I'm a parent</button></div>
+  <div id="lf-student" style="${tab==="student"?"":"display:none"}" class="center">
+   <p class="muted" style="margin:0">Enter your 4-digit student PIN</p>
+   <div class="pin">${[0,1,2,3].map(()=>"<span></span>").join("")}</div>
+   <div class="err" id="s-err" style="color:#c2410c;font-weight:600;min-height:22px;font-size:14px"></div>
+   <div class="pad">${[1,2,3,4,5,6,7,8,9,"⌫",0,"→"].map(k=>`<button data-k="${k}" aria-label="${k}">${k}</button>`).join("")}</div>
+   <p class="muted" style="font-size:13px;margin-top:16px">Forgot your PIN? Ask your parent. They can reset it from their dashboard.</p>
   </div>
-  <p class="muted center" style="font-size:13px;margin-top:16px">Sample family and data for illustration.</p>
-</div></section>`;
-const KIDS=[{n:"Maya",g:"Grade 7",plan:"Middle school Standard",hrs:"3h 40m",q:"9/11",bars:[40,75,30,90,55,20,65],subs:[["Math",72],["Reading / ELA",58],["Science",35]],win:"Solved two-step equations on her own. Quiz score up from 2/3 to 3/3.",next:"Percent problems: mixing up \"of\" and \"off\"."},
-            {n:"Leo",g:"Grade 10",plan:"High school Premium",hrs:"5h 10m",q:"14/18",bars:[60,30,80,70,45,90,25],subs:[["Algebra II",64],["Chemistry",51],["English II",77]],win:"Balanced chemical equations on the first try three times this week.",next:"Logarithm rules before Friday's quiz. SAT practice set 2 is ready."}];
-function bindParents(){const pd=$("#pd");if(!pd)return;const draw=i=>{const k=KIDS[i];pd.innerHTML=`
- <div class="grid g3"><div class="card"><div class="muted" style="font-size:13px">Time learning this week</div><div class="kpi">${k.hrs}</div></div><div class="card"><div class="muted" style="font-size:13px">Quiz questions right</div><div class="kpi">${k.q}</div></div><div class="card"><div class="muted" style="font-size:13px">Plan</div><div style="font-weight:700;margin-top:10px">${k.plan}</div></div></div>
+  <form id="lf-parent" style="${tab==="parent"?"":"display:none"}" onsubmit="return false">
+   <label style="font-weight:600;font-size:14px">Email</label>
+   <input id="p-email" type="email" autocomplete="off" value="${DEMO.parentEmail}" style="width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:12px;font:inherit;margin:6px 0 14px">
+   <label style="font-weight:600;font-size:14px">Parent PIN</label>
+   <input id="p-pin" type="password" inputmode="numeric" maxlength="4" autocomplete="off" placeholder="••••" style="width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:12px;font:inherit;letter-spacing:.4em;margin:6px 0 6px">
+   <div id="p-err" style="color:#c2410c;font-weight:600;min-height:22px;font-size:14px"></div>
+   <button class="btn btn-green" id="p-go" style="width:100%;justify-content:center">Log in</button>
+   <p class="muted center" style="font-size:13px;margin-top:14px"><a href="javascript:void 0" onclick="toast('Demo: a reset link would be emailed to you')">Forgot PIN?</a> · New here? <a href="#/pricing">Start a free trial</a></p>
+  </form>
+ </div>
+ <div class="card" style="max-width:480px;margin:18px auto 0;background:#fff7e8;border:1px dashed var(--amber-d)">
+  <b>Demo access</b>
+  <div style="display:grid;grid-template-columns:1fr auto;gap:6px 14px;margin-top:10px;font-size:14.5px">
+   <span>👧 Student: Maya, Grade 7</span><b>PIN 1234</b>
+   <span>👦 Student: Leo, Grade 10</span><b>PIN 5678</b>
+   <span>👪 Parent: ${DEMO.parentEmail}</span><b>PIN 2468</b>
+  </div></div>
+</div></section>`};
+function bindLogin(){
+ const lt=$("#lt"); if(!lt) return;
+ lt.onclick=e=>{const t=e.target.dataset.t;if(!t)return;lt.querySelectorAll("button").forEach(b=>b.classList.toggle("on",b===e.target));$("#lf-student").style.display=t==="student"?"":"none";$("#lf-parent").style.display=t==="parent"?"":"none"};
+ let pin="";const cells=document.querySelectorAll("#lf-student .pin span"),err=$("#s-err");
+ const draw=()=>cells.forEach((c,i)=>{c.textContent=pin[i]?"•":"";c.classList.toggle("f",!!pin[i])});
+ const tryPin=()=>{const kid=DEMO.students[pin];if(kid===undefined){err.textContent="That PIN didn't work. Try again.";$("#lf-student .pin").animate([{transform:"translateX(0)"},{transform:"translateX(-8px)"},{transform:"translateX(8px)"},{transform:"translateX(0)"}],{duration:260});pin="";draw();return}
+   saveSession({role:"student",kid});location.hash="#/student"};
+ $("#lf-student .pad").onclick=e=>{const k=e.target.dataset.k;if(k===undefined)return;err.textContent="";
+   if(k==="⌫")pin=pin.slice(0,-1);else if(k==="→"){if(pin.length===4)tryPin();return}else if(pin.length<4)pin+=k;draw();if(pin.length===4)setTimeout(tryPin,250)};
+ const pgo=()=>{const em=$("#p-email").value.trim().toLowerCase(),pp=$("#p-pin").value.trim();
+   if(em!==DEMO.parentEmail||pp!==DEMO.parentPin){$("#p-err").textContent="Email or PIN is incorrect.";return}
+   saveSession({role:"parent"});location.hash="#/parent"};
+ $("#p-go").onclick=pgo; $("#p-pin").addEventListener("keydown",e=>{$("#p-err").textContent="";if(e.key==="Enter")pgo()});
+}
+
+/* ---------- student dashboard ---------- */
+Pages.student = () => {
+ if(!SESSION||SESSION.role!=="student"){setTimeout(()=>location.hash="#/login",0);return ""}
+ const k=KIDS[SESSION.kid];
+ return `<section><div class="wrap">
+ <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+  <div><div class="eyebrow" style="margin:0">${k.g} · ${k.lvl==="ms"?"Middle school":"High school"} ${k.plan}</div><h1 style="margin:4px 0">Hey ${k.n}! 👋</h1></div>
+  <div style="display:flex;gap:10px;align-items:center"><div class="streak">${["M","T","W","T","F","S","S"].map((d,i)=>`<i class="${i<k.streak?"on":""}" title="${d}">${i<k.streak?"🔥":d}</i>`).join("")}</div><button class="btn btn-ghost btn-sm" onclick="logout()">Log out</button></div>
+ </div>
+ ${note("Each student has their own home screen, with a streak, XP and 'pick up where you left off'. Daily habit is what keeps families subscribed.")}
+ <div class="grid g4 kpis" style="margin-top:22px">
+  <div class="card"><div class="muted" style="font-size:13px">Learning streak</div><div class="kpi">${k.streak} days 🔥</div></div>
+  <div class="card"><div class="muted" style="font-size:13px">XP earned</div><div class="kpi">${k.xp.toLocaleString()}</div></div>
+  <div class="card"><div class="muted" style="font-size:13px">Quiz questions right</div><div class="kpi">${k.q}</div></div>
+  <div class="card"><div class="muted" style="font-size:13px">Practice next</div><div style="font-weight:700;margin-top:10px;font-size:15px">${k.next.split(":")[0].split(".")[0]}</div></div>
+ </div>
+ <h3 style="margin-top:32px">Pick up where you left off</h3>
+ <div class="grid g3">${k.subs.map(([id,pct,ch])=>{const s=subj(id);return `<a class="card subj" href="#/subject/${id}?quiz"><div class="ico" style="background:${s.col}">${s.ico}</div><h3>${s.level==="ms"?s.name:s.name}</h3><div class="muted" style="font-size:14px">Chapter ${ch+1}: ${s.topics[ch]}</div><div class="progress" style="margin:4px 0"><i style="width:${pct}%;background:var(--green)"></i></div><span class="go">Practice quiz →</span></a>`}).join("")}</div>
+ ${k.lvl==="hs"?`<div class="card" style="margin-top:20px;display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;background:var(--green-t)"><div><span class="tag amber">Premium</span><h3 style="margin:8px 0 2px">SAT practice set 2 is ready</h3><div class="muted" style="font-size:14px">20 questions · about 25 minutes</div></div><button class="btn btn-green btn-sm" onclick="toast('Demo: SAT/ACT prep mode opens here')">Start SAT practice</button></div>`
+ :`<div class="card" style="margin-top:20px;display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;background:var(--green-t)"><div><span class="tag">Standard</span><h3 style="margin:8px 0 2px">Stuck on a worksheet?</h3><div class="muted" style="font-size:14px">Snap a photo and work through it step by step</div></div><button class="btn btn-green btn-sm" onclick="document.querySelector('#stuChat [data-scan]').click();document.getElementById('stuChat').scrollIntoView({behavior:'smooth'})">📷 Scan homework</button></div>`}
+ <h3 style="margin-top:32px">Your tutor</h3>
+ ${chatHTML("stuChat",{sub:"Your tutor · always here"})}
+ <p class="muted center" style="font-size:13px;margin-top:12px">Sample student and data for this demo.</p>
+ </div></section>`};
+function bindStudentDash(){ if(!$("#stuChat")||!SESSION) return; const k=KIDS[SESSION.kid];
+ initChat("stuChat",[`Welcome back, ${k.n}! Last time we worked on ${k.lastTopic}. 💪`,`Want to warm up with one? Try typing <b>${k.warm}</b>.`]) }
+
+/* ---------- parent dashboard ---------- */
+Pages.parent = () => {
+ if(!SESSION||SESSION.role!=="parent"){setTimeout(()=>location.hash="#/login?parent",0);return ""}
+ return `<section><div class="wrap">
+ <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px"><div><div class="eyebrow" style="margin:0">Parent dashboard</div><h1 style="margin:4px 0">The Garcia family</h1></div><button class="btn btn-ghost btn-sm" onclick="logout()">Log out</button></div>
+ ${note("Everything a parent needs on one screen: each child's week, the summary email, PIN resets and billing with the sibling discount already applied.")}
+ <div class="dash" style="margin-top:24px">
+  <div class="side" id="pside"><a class="on" data-v="kid0">👧 Maya · Grade 7</a><a data-v="kid1">👦 Leo · Grade 10</a><a data-v="email">✉️ Weekly email</a><a data-v="settings">⚙️ Students &amp; PINs</a><a data-v="billing">💳 Billing</a></div>
+  <div id="pd"></div>
+ </div>
+ <p class="muted center" style="font-size:13px;margin-top:16px">Sample family and data for this demo.</p></div></section>`};
+function kidView(k){return `
+ <div class="grid g3"><div class="card"><div class="muted" style="font-size:13px">Time learning this week</div><div class="kpi">${k.hrs}</div></div><div class="card"><div class="muted" style="font-size:13px">Quiz questions right</div><div class="kpi">${k.q}</div></div><div class="card"><div class="muted" style="font-size:13px">Streak</div><div class="kpi">${k.streak} days 🔥</div></div></div>
  <div class="grid g2" style="margin-top:20px"><div class="card"><h3>${k.n}'s week</h3><div class="bars">${k.bars.map((v,j)=>`<div style="height:${v}%"><span>${"MTWTFSS"[j]}</span></div>`).join("")}</div></div>
- <div class="card"><h3>Progress by subject</h3>${k.subs.map(s=>`<div style="margin:14px 0"><div style="display:flex;justify-content:space-between;font-size:14px"><b>${s[0]}</b><span>${s[1]}%</span></div><div class="progress" style="margin:6px 0 0"><i style="width:${s[1]}%;background:var(--green)"></i></div></div>`).join("")}</div></div>
+ <div class="card"><h3>Progress by subject</h3>${k.subs.map(([id,p])=>`<div style="margin:14px 0"><div style="display:flex;justify-content:space-between;font-size:14px"><b>${subj(id).name}</b><span>${p}%</span></div><div class="progress" style="margin:6px 0 0"><i style="width:${p}%;background:var(--green)"></i></div></div>`).join("")}</div></div>
  <div class="grid g2" style="margin-top:20px"><div class="card" style="background:var(--green-t)"><b>✅ Wins</b><p class="muted" style="margin:6px 0 0">${k.win}</p></div><div class="card" style="background:#fdf0da"><b>🎯 Practice next</b><p class="muted" style="margin:6px 0 0">${k.next}</p></div></div>
- <p class="muted" style="font-size:13px;margin-top:14px">🔒 Full chat transcripts are never shared, only this summary.</p>`};
- document.querySelectorAll(".side [data-kid]").forEach(a=>a.onclick=()=>{document.querySelectorAll(".side [data-kid]").forEach(x=>x.classList.toggle("on",x===a));draw(+a.dataset.kid)});draw(0)}
+ <p class="muted" style="font-size:13px;margin-top:14px">🔒 Full chat transcripts are never shared, only this summary.</p>`}
+function emailView(){return `<div class="card" style="max-width:640px">
+ <div class="muted" style="font-size:13px;border-bottom:1px solid var(--line);padding-bottom:10px;margin-bottom:14px"><b>From:</b> Study Buddy Texas &nbsp;·&nbsp; <b>Subject:</b> Your weekly summary: Maya and Leo</div>
+ <p>Hi there,</p><p>Here's how your students did this week.</p>
+ ${KIDS.map(k=>`<div style="border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px"><b>${k.n} · ${k.g}</b><div class="muted" style="font-size:14px;margin-top:4px">${k.hrs} learning · ${k.q} quiz questions right · ${k.streak}-day streak</div><div style="font-size:14px;margin-top:8px">✅ ${k.win}</div><div style="font-size:14px;margin-top:4px">🎯 ${k.next}</div></div>`).join("")}
+ <p class="muted" style="font-size:13px">We never share full chat transcripts, only this summary. Questions? Reply to this email and a real person will answer by the next business day.</p>
+ <label style="display:flex;gap:10px;align-items:center;margin-top:10px;font-weight:600"><input type="checkbox" checked onchange="toast(this.checked?'Weekly email on':'Weekly email paused')"> Send me this every Sunday</label></div>`}
+function settingsView(){return `<div class="grid g2">${KIDS.map((k,i)=>`<div class="card"><h3>${k.n} · ${k.g}</h3><div class="muted" style="font-size:14px">${k.lvl==="ms"?"Middle school":"High school"} ${k.plan}</div>
+ <div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px;background:var(--cream);border-radius:12px;padding:12px 14px"><span>Student PIN</span><b id="pinv${i}" style="letter-spacing:.2em">••••</b></div>
+ <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap"><button class="btn btn-ghost btn-sm" onclick="const e=document.getElementById('pinv${i}');e.textContent=e.textContent==='••••'?'${k.pin}':'••••'">Show PIN</button><button class="btn btn-ghost btn-sm" onclick="toast('Demo: ${k.n} gets a new PIN. The demo keeps ${k.pin}.')">Reset PIN</button></div></div>`).join("")}
+ <div class="card" style="display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;border-style:dashed"><div style="font-size:30px">➕</div><h3 style="margin:6px 0">Add a student</h3><p class="muted" style="font-size:14px">Every child after your first is 15% off</p><button class="btn btn-green btn-sm" onclick="toast('Demo: add-a-student flow opens here')">Add student</button></div></div>`}
+function billingView(){const first=Math.max(...KIDS.map(k=>k.price));let rows=KIDS.slice().sort((a,b)=>b.price-a.price).map((k,i)=>({k,full:k.price,charged:i?k.price*0.85:k.price}));const tot=rows.reduce((s,r)=>s+r.charged,0),save=rows.reduce((s,r)=>s+r.full-r.charged,0);
+ return `<div class="card" style="max-width:640px"><h3>Your plan</h3>
+ ${rows.map((r,i)=>`<div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--line)"><div><b>${r.k.n}</b> · ${r.k.lvl==="ms"?"Middle school":"High school"} ${r.k.plan}${i?' <span class="tag amber">Sibling −15%</span>':""}</div><div>${i?`<s class="muted">$${r.full.toFixed(2)}</s> `:""}<b>$${r.charged.toFixed(2)}</b></div></div>`).join("")}
+ <div style="display:flex;justify-content:space-between;padding:14px 0;font-size:18px"><b>Monthly total</b><b>$${tot.toFixed(2)}</b></div>
+ <div class="muted" style="font-size:14px">You save $${save.toFixed(2)} a month with the sibling discount.</div>
+ <div style="display:flex;gap:8px;margin-top:16px;flex-wrap:wrap"><button class="btn btn-ghost btn-sm" onclick="toast('Demo: change plan')">Change plan</button><button class="btn btn-ghost btn-sm" onclick="toast('Demo: update payment method')">Payment method</button><button class="btn btn-ghost btn-sm" onclick="toast('Demo: cancel flow, with 7-day full refund or 50% mid-month refund')">Cancel</button></div>
+ <p class="muted" style="font-size:13px;margin-top:14px">Billing questions go to a real person at support@studybuddytx.com. Reply by the next business day.</p></div>`}
+function bindParentDash(){const pd=$("#pd");if(!pd)return;
+ const show=v=>{pd.innerHTML=v==="kid0"?kidView(KIDS[0]):v==="kid1"?kidView(KIDS[1]):v==="email"?emailView():v==="settings"?settingsView():billingView()};
+ $("#pside").onclick=e=>{const a=e.target.closest("[data-v]");if(!a)return;$("#pside").querySelectorAll("a").forEach(x=>x.classList.toggle("on",x===a));show(a.dataset.v)};show("kid0")}
 
 Pages.try = () => `<section><div class="wrap grid g2" style="gap:44px;align-items:start">
   <div><div class="eyebrow">Free session · no signup</div><h1>Try your Study Buddy right now</h1>
@@ -674,28 +803,6 @@ Pages.try = () => `<section><div class="wrap grid g2" style="gap:44px;align-item
   </div>
   <div>${chatHTML("tryChat",{sub:"Free session"})}</div>
 </div></section>`;
-
-Pages.student = () => `<section><div class="wrap" id="stu">
-  <div class="card" style="max-width:460px;margin:0 auto;text-align:center"><div class="avatar" style="margin:0 auto 12px;width:56px;height:56px;font-size:20px">SB</div><h2>Student login</h2><p class="muted">Enter your 4-digit PIN. <b>Demo: any 4 digits</b></p>
-   <div class="pin">${[0,1,2,3].map(()=>"<span></span>").join("")}</div>
-   <div class="pad">${[1,2,3,4,5,6,7,8,9,"⌫",0,"→"].map(k=>`<button data-k="${k}">${k}</button>`).join("")}</div>
-  </div></div></section>`;
-function bindStudent(){const st=$("#stu");if(!st||!st.querySelector(".pad"))return;let pin="";const cells=st.querySelectorAll(".pin span");
- const draw=()=>cells.forEach((c,i)=>{c.textContent=pin[i]?"•":"";c.classList.toggle("f",!!pin[i])});
- st.querySelector(".pad").onclick=e=>{const k=e.target.dataset.k;if(k===undefined)return;if(k==="⌫")pin=pin.slice(0,-1);else if(k==="→"){if(pin.length===4)studentDash();return}else if(pin.length<4)pin+=k;draw();if(pin.length===4)setTimeout(studentDash,350)}}
-function studentDash(){$("#stu").innerHTML=`
- <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px"><div><div class="eyebrow" style="margin:0">Welcome back</div><h1 style="margin:4px 0">Hey Maya! 👋</h1></div><div class="streak">${["M","T","W","T","F","S","S"].map((d,i)=>`<i class="${i<5?"on":""}">${i<5?"🔥":d}</i>`).join("")}</div></div>
- ${note("A student home screen with a streak and 'pick up where you left off' gives kids a reason to come back daily. That's what keeps families subscribed.")}
- <div class="grid g3" style="margin-top:22px">
-  <div class="card"><div class="muted" style="font-size:13px">Learning streak</div><div class="kpi">5 days 🔥</div></div>
-  <div class="card"><div class="muted" style="font-size:13px">Quizzes this week</div><div class="kpi">4</div></div>
-  <div class="card"><div class="muted" style="font-size:13px">Next up</div><div style="font-weight:700;margin-top:10px">Percent problems</div></div>
- </div>
- <h3 style="margin-top:30px">Pick up where you left off</h3>
- <div class="grid g3">${["ms-math","ms-ela","ms-sci"].map((id,i)=>{const s=subj(id);return `<a class="card subj" href="#/subject/${id}?quiz"><div class="ico" style="background:${s.col}">${s.ico}</div><h3>${s.name}</h3><div class="muted" style="font-size:14px">Chapter ${i+2}: ${s.topics[i+1]}</div><div class="progress" style="margin:4px 0"><i style="width:${[72,58,35][i]}%;background:var(--green)"></i></div><span class="go">Practice quiz →</span></a>`}).join("")}</div>
- <div style="margin-top:28px">${chatHTML("stuChat",{sub:"Your tutor"})}</div>
- <p class="muted center" style="font-size:13px;margin-top:12px">Sample student and data for illustration.</p>`;
- initChat("stuChat",[`Welcome back, Maya! Last time we worked on two-step equations. 💪`,`Want to warm up with one? Try typing <b>4x + 6 = 30</b>.`]);}
 
 Pages.faq = () => `<section><div class="wrap" style="max-width:820px">
   <div class="center"><div class="eyebrow">FAQ</div><h1>Questions parents ask</h1></div>
@@ -715,14 +822,14 @@ Pages.about = () => `<section><div class="wrap grid g2" style="gap:48px;align-it
 Pages.notfound = () => `<section><div class="wrap center"><h1>Page not found</h1><p class="lead">Let's get you back on track.</p><a class="btn btn-green" href="#/">Go home</a></div></section>`;
 
 /* ---------------- router ---------------- */
-const TITLES={"":"AI Tutor for Texas Students, Grades 6–12",subjects:"All 14 TEKS Subjects",how:"How It Works",pricing:"Pricing from $29/mo",parents:"Parent Dashboard",try:"Try a Free Session",student:"Student Login",faq:"FAQ",about:"About"};
+const TITLES={"":"AI Tutor for Texas Students, Grades 6–12",subjects:"All 14 TEKS Subjects",how:"How It Works",pricing:"Pricing from $29/mo",parents:"For Parents",parent:"Parent Dashboard",login:"Log In",try:"Try a Free Session",student:"Student Dashboard",faq:"FAQ",about:"About"};
 function route(){
   const h=location.hash.replace(/^#\/?/,""); const [path,query]=h.split("?"); const parts=path.split("/");
   const key=parts[0]||"";
   let html;
   if(key==="")html=Pages.home();
   else if(key==="subject")html=Pages.subject(parts[1],query);
-  else if(Pages[key])html=Pages[key]();
+  else if(Pages[key])html=Pages[key](parts[1],query);
   else html=Pages.notfound();
   app.innerHTML=html;
   const s=key==="subject"&&subj(parts[1]);
@@ -730,7 +837,7 @@ function route(){
   document.querySelectorAll(".navlinks a").forEach(a=>a.classList.toggle("active",a.getAttribute("href")==="#/"+key));
   if(key==="")initChat("heroChat");
   if(key==="try")initChat("tryChat");
-  bindCalc();bindSubjects();bindPricing();bindParents();bindStudent();
+  bindCalc();bindSubjects();bindPricing();bindLogin();bindStudentDash();bindParentDash();updateNav();
   if(s){runQuiz(s);if(query==="quiz")setTimeout(()=>$("#quiz")&&$("#quiz").scrollIntoView({behavior:"smooth",block:"center"}),80)}
   if(!(s&&query==="quiz"))window.scrollTo(0,0);
 }
