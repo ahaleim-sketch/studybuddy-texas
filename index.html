@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Study Buddy Texas | AI Tutor for Texas Students, Grades 6–12</title>
+<meta name="description" content="Patient, one-on-one AI tutoring for Texas students in grades 6–12, grounded in TEKS. STAAR, SAT and ACT prep. Try it free for a day, no signup.">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"Is Study Buddy Texas a replacement for school?","acceptedAnswer":{"@type":"Answer","text":"No. It is a supplemental tutor that helps with what your student is learning in class this week, grounded in Texas TEKS standards."}},
+{"@type":"Question","name":"Can I try it before paying?","acceptedAnswer":{"@type":"Answer","text":"Yes. Try any plan free for a day before your card is charged, and cancel anytime during the trial."}},
+{"@type":"Question","name":"Do parents see the chats?","acceptedAnswer":{"@type":"Answer","text":"Parents get a simple weekly summary of progress and struggles. Full chat transcripts are never shared."}}]}
+</script>
+<style>
+:root{
+  --green:#1f5c45; --green-d:#15402f; --green-t:#e8f2ec; --ink:#0f1f19; --muted:#55665e;
+  --amber:#f2a93b; --amber-d:#d98d1c; --cream:#fbf8f2; --line:#e3e8e4; --white:#fff;
+  --sky:#e9f1fb; --rose:#fde9e4; --r:18px; --shadow:0 10px 30px rgba(15,31,25,.08);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:"Plus Jakarta Sans",system-ui,-apple-system,Segoe UI,sans-serif;color:var(--ink);background:var(--cream);line-height:1.55;font-size:16px}
+h1,h2,h3,.display{font-family:Fraunces,Georgia,serif;letter-spacing:-.01em;line-height:1.12;margin:0 0 .5em}
+h1{font-size:clamp(2.1rem,4.6vw,3.6rem)} h2{font-size:clamp(1.7rem,3.2vw,2.5rem)} h3{font-size:1.25rem}
+p{margin:0 0 1em} a{color:var(--green)}
+.wrap{max-width:1180px;margin:0 auto;padding:0 22px}
+.btn{white-space:nowrap;display:inline-flex;align-items:center;gap:8px;border:0;border-radius:999px;padding:13px 22px;font:600 15px/1 inherit;font-family:inherit;cursor:pointer;text-decoration:none;transition:transform .15s,background .15s,box-shadow .15s}
+.btn:hover{transform:translateY(-1px)}
+.btn-amber{background:var(--amber);color:var(--ink);box-shadow:0 6px 18px rgba(242,169,59,.35)}
+.btn-amber:hover{background:var(--amber-d)}
+.btn-green{background:var(--green);color:#fff}
+.btn-green:hover{background:var(--green-d)}
+.btn-ghost{background:transparent;color:var(--green);border:1.5px solid var(--green)}
+.btn-sm{padding:9px 15px;font-size:14px}
+.chip{display:inline-flex;align-items:center;gap:6px;background:var(--white);border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-size:13px;font-weight:600;color:var(--muted)}
+.tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:3px 8px;border-radius:6px;background:var(--green-t);color:var(--green)}
+.tag.amber{background:#fdf0da;color:#8a5a10}
+.card{background:var(--white);border:1px solid var(--line);border-radius:var(--r);padding:24px;box-shadow:var(--shadow)}
+.muted{color:var(--muted)}
+.grid{display:grid;gap:20px}
+.g2{grid-template-columns:repeat(2,1fr)} .g3{grid-template-columns:repeat(3,1fr)} .g4{grid-template-columns:repeat(4,1fr)}
+section{padding:72px 0}
+.eyebrow{font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--green);margin-bottom:10px}
+.center{text-align:center}
+.lead{font-size:1.15rem;color:var(--muted);max-width:640px}
+.center .lead{margin-left:auto;margin-right:auto}
+
+/* concept banner */
+.concept{background:var(--ink);color:#e7efe9;font-size:13px;padding:8px 0}
+.concept .wrap{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.concept b{color:var(--amber)}
+.notes-toggle{background:transparent;border:1px solid #4b5f56;color:#e7efe9;border-radius:999px;padding:4px 12px;font:600 12px inherit;font-family:inherit;cursor:pointer}
+body.notes .notes-toggle{background:var(--amber);color:var(--ink);border-color:var(--amber)}
+.mnote{display:none;margin:12px 0;background:#fff7e8;border:1px dashed var(--amber-d);color:#6b4708;border-radius:12px;padding:10px 14px;font-size:13.5px}
+.mnote::before{content:"Meridian note · ";font-weight:700}
+body.notes .mnote{display:block}
+
+/* nav */
+header.nav{position:sticky;top:0;z-index:40;background:rgba(251,248,242,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.nav .wrap{display:flex;align-items:center;justify-content:space-between;height:68px;gap:16px}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);font-weight:700}
+.logo-mark{width:38px;height:38px;border-radius:11px;background:var(--green);display:grid;place-items:center;color:#fff;font-family:Fraunces,serif;font-size:18px;position:relative}
+.logo-mark::after{content:"";position:absolute;right:-3px;top:-3px;width:12px;height:12px;background:var(--amber);clip-path:polygon(50% 0,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%)}
+.logo small{display:block;font-weight:500;color:var(--muted);font-size:11px;letter-spacing:.04em}
+.navlinks{display:flex;gap:4px;align-items:center}
+.navlinks a{padding:8px 12px;border-radius:10px;text-decoration:none;color:var(--ink);font-weight:600;font-size:14.5px}
+.navlinks a:hover,.navlinks a.active{background:var(--green-t);color:var(--green)}
+.nav-cta{display:flex;gap:8px;align-items:center}
+.burger{display:none;background:none;border:0;font-size:26px;cursor:pointer;color:var(--ink)}
+.mobile-menu{display:none;flex-direction:column;padding:8px 22px 18px;border-bottom:1px solid var(--line);background:var(--cream)}
+.mobile-menu a{padding:12px 4px;border-bottom:1px solid var(--line);text-decoration:none;color:var(--ink);font-weight:600}
+.mobile-menu.open{display:flex}
+
+/* hero */
+.hero{padding:64px 0 56px;position:relative;overflow:hidden}
+.hero::before{content:"";position:absolute;inset:auto -20% -40% auto;width:720px;height:720px;background:radial-gradient(circle,rgba(242,169,59,.18),transparent 60%);z-index:-1}
+.hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center}
+.hero h1 em{font-style:normal;color:var(--green);background:linear-gradient(transparent 62%,rgba(242,169,59,.45) 62%)}
+.hero .ctas{display:flex;gap:12px;flex-wrap:wrap;margin:26px 0 18px}
+.trust{display:flex;flex-wrap:wrap;gap:8px}
+.hero-demo{position:relative}
+.tx-badge{position:absolute;left:-22px;top:-22px;background:var(--white);border-radius:16px;box-shadow:var(--shadow);padding:12px 16px;display:flex;gap:10px;align-items:center;font-size:13px;border:1px solid var(--line)}
+.tx-badge b{display:block;font-size:15px}
+
+/* chat */
+.chat{background:var(--white);border:1px solid var(--line);border-radius:22px;box-shadow:0 24px 60px rgba(15,31,25,.14);overflow:hidden;display:flex;flex-direction:column}
+.chat-head{display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid var(--line);background:linear-gradient(90deg,var(--green-t),#fff)}
+.avatar{width:36px;height:36px;border-radius:50%;background:var(--green);color:#fff;display:grid;place-items:center;font-weight:700}
+.chat-head .status{font-size:12px;color:var(--green);font-weight:600}
+.chat-head .status::before{content:"● ";color:#2bb673}
+.chat-body{padding:18px;display:flex;flex-direction:column;gap:10px;height:360px;overflow-y:auto;background:#fcfdfc}
+.msg{max-width:84%;padding:11px 14px;border-radius:16px;font-size:14.5px;animation:pop .25s ease}
+.msg.bot{background:var(--green-t);border-bottom-left-radius:4px;align-self:flex-start}
+.msg.me{background:var(--green);color:#fff;border-bottom-right-radius:4px;align-self:flex-end}
+.msg .step{display:block;font-size:12px;font-weight:700;color:var(--green);margin-bottom:2px}
+.typing{display:inline-flex;gap:4px}
+.typing i{width:7px;height:7px;border-radius:50%;background:var(--green);opacity:.5;animation:blink 1s infinite}
+.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
+@keyframes blink{50%{opacity:1;transform:translateY(-2px)}}
+@keyframes pop{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.chat-suggest{display:flex;gap:6px;flex-wrap:wrap;padding:0 18px 10px;background:#fcfdfc}
+.chat-suggest button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 11px;font:600 12.5px inherit;font-family:inherit;cursor:pointer;color:var(--green)}
+.chat-suggest button:hover{background:var(--green-t)}
+.chat-input{display:flex;gap:8px;padding:12px;border-top:1px solid var(--line)}
+.grid>*,.hero-grid>*{min-width:0}
+.chat-input input{flex:1;min-width:0;border:1px solid var(--line);border-radius:999px;padding:11px 16px;font:inherit;font-size:14.5px;outline:none}
+.chat-input input:focus{border-color:var(--green)}
+.icon-btn{width:42px;height:42px;border-radius:50%;border:1px solid var(--line);background:#fff;cursor:pointer;font-size:17px}
+.demo-label{font-size:11.5px;color:var(--muted);text-align:center;padding:0 0 10px}
+
+/* strip */
+.strip{background:var(--green);color:#fff;padding:22px 0}
+.strip .wrap{display:flex;gap:28px;justify-content:space-around;flex-wrap:wrap;text-align:center}
+.strip b{display:block;font-family:Fraunces,serif;font-size:1.7rem;color:var(--amber)}
+.strip span{font-size:13.5px;opacity:.9}
+
+/* subjects */
+.filters{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:24px 0}
+.filters button{border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:9px 16px;font:600 14px inherit;font-family:inherit;cursor:pointer}
+.filters button.on{background:var(--green);color:#fff;border-color:var(--green)}
+.search{max-width:420px;margin:0 auto;display:block;width:100%;border:1.5px solid var(--line);border-radius:999px;padding:12px 18px;font:inherit}
+.subj{cursor:pointer;transition:transform .15s,box-shadow .15s;text-decoration:none;color:inherit;display:flex;flex-direction:column;gap:8px}
+.subj:hover{transform:translateY(-3px);box-shadow:0 16px 40px rgba(15,31,25,.12)}
+.subj .ico{width:46px;height:46px;border-radius:13px;display:grid;place-items:center;font-size:22px}
+.subj h3{margin:4px 0 0}
+.subj .go{margin-top:auto;font-weight:700;color:var(--green);font-size:14px}
+
+/* steps */
+.step-card{position:relative;padding-top:34px}
+.step-num{position:absolute;top:-18px;left:24px;width:40px;height:40px;border-radius:12px;background:var(--amber);font-family:Fraunces,serif;font-weight:700;display:grid;place-items:center}
+
+/* pricing */
+.toggle{display:inline-flex;background:#fff;border:1px solid var(--line);border-radius:999px;padding:4px;margin:20px 0 30px}
+.toggle button{border:0;background:transparent;border-radius:999px;padding:10px 18px;font:600 14px inherit;font-family:inherit;cursor:pointer;color:var(--muted)}
+.toggle button.on{background:var(--green);color:#fff}
+.plan{display:flex;flex-direction:column;gap:12px;position:relative}
+.plan.pop{border:2px solid var(--green);transform:translateY(-6px)}
+.plan .pop-tag{position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--amber);font-size:12px;font-weight:700;padding:4px 12px;border-radius:999px}
+.price{font-family:Fraunces,serif;font-size:2.6rem;font-weight:700}
+.price small{font-family:"Plus Jakarta Sans";font-size:15px;color:var(--muted);font-weight:500}
+.plan ul{list-style:none;padding:0;margin:0 0 8px;display:flex;flex-direction:column;gap:8px}
+.plan li::before{content:"✓ ";color:var(--green);font-weight:700}
+.calc{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:center}
+.calc label{font-weight:600;font-size:14px;display:block;margin:14px 0 6px}
+.calc input[type=range]{width:100%;accent-color:var(--green)}
+.calc select{width:100%;padding:10px;border-radius:10px;border:1px solid var(--line);font:inherit}
+.save-out{background:var(--green);color:#fff;border-radius:var(--r);padding:28px;text-align:center}
+.save-out .big{font-family:Fraunces,serif;font-size:3rem;color:var(--amber);line-height:1}
+.compare-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.15);font-size:14.5px}
+
+/* guarantees */
+.guar{display:flex;gap:14px;align-items:flex-start}
+.guar .g-ico{flex:0 0 46px;height:46px;border-radius:14px;background:var(--green-t);display:grid;place-items:center;font-size:22px}
+
+/* placeholders */
+.slot{border:2px dashed #b9c7bf;border-radius:var(--r);background:repeating-linear-gradient(45deg,#f3f6f4,#f3f6f4 10px,#eef2ef 10px,#eef2ef 20px);display:grid;place-items:center;text-align:center;color:var(--muted);font-weight:600;font-size:14px;padding:20px;min-height:180px}
+
+/* faq */
+details{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 20px;margin-bottom:10px}
+summary{font-weight:700;cursor:pointer;list-style:none;display:flex;justify-content:space-between}
+summary::after{content:"+";font-size:22px;color:var(--green);line-height:1}
+details[open] summary::after{content:"–"}
+details p{margin:12px 0 0;color:var(--muted)}
+
+/* subject page */
+.crumbs{font-size:14px;color:var(--muted);margin-bottom:14px}
+.crumbs a{color:var(--muted)}
+.chapters{counter-reset:ch;display:flex;flex-direction:column;gap:10px}
+.chapter{display:flex;gap:14px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+.chapter::before{counter-increment:ch;content:counter(ch);width:32px;height:32px;flex:0 0 32px;border-radius:10px;background:var(--green-t);color:var(--green);font-weight:700;display:grid;place-items:center}
+.chapter .bar{margin-left:auto;width:110px;height:8px;border-radius:9px;background:#eef2ef;overflow:hidden}
+.chapter .bar i{display:block;height:100%;background:var(--green)}
+
+/* quiz */
+.quiz-q{font-family:Fraunces,serif;font-size:1.35rem;margin-bottom:16px}
+.opt{display:block;width:100%;text-align:left;border:1.5px solid var(--line);background:#fff;border-radius:12px;padding:13px 16px;margin-bottom:10px;font:500 15px inherit;font-family:inherit;cursor:pointer;transition:.15s}
+.opt:hover{border-color:var(--green)}
+.opt.right{background:#e3f5ea;border-color:#2bb673}
+.opt.wrong{background:var(--rose);border-color:#e0664a}
+.progress{height:8px;background:#eef2ef;border-radius:9px;overflow:hidden;margin-bottom:18px}
+.progress i{display:block;height:100%;background:var(--amber);transition:width .3s}
+.explain{background:var(--green-t);border-radius:12px;padding:12px 14px;font-size:14.5px;margin-top:6px}
+
+/* dashboards */
+.dash{display:grid;grid-template-columns:240px 1fr;gap:22px}
+.side{background:var(--ink);color:#dfe9e3;border-radius:var(--r);padding:22px;display:flex;flex-direction:column;gap:6px}
+.side a{color:#dfe9e3;text-decoration:none;padding:10px 12px;border-radius:10px;font-weight:600;font-size:14.5px;cursor:pointer}
+.side a.on,.side a:hover{background:rgba(255,255,255,.08);color:#fff}
+.kpi{font-family:Fraunces,serif;font-size:2.1rem;font-weight:700}
+.bars{display:flex;align-items:flex-end;gap:10px;height:150px;padding-top:10px}
+.bars div{flex:1;background:var(--green);border-radius:8px 8px 3px 3px;position:relative;min-height:6px;transition:height .5s}
+.bars div span{position:absolute;bottom:-22px;left:0;right:0;text-align:center;font-size:12px;color:var(--muted)}
+.pin{display:flex;gap:12px;justify-content:center;margin:18px 0}
+.pin span{width:52px;height:60px;border-radius:14px;border:2px solid var(--line);display:grid;place-items:center;font-size:26px;font-weight:700;background:#fff}
+.pin span.f{border-color:var(--green)}
+.pad{display:grid;grid-template-columns:repeat(3,72px);gap:10px;justify-content:center}
+.pad button{height:58px;border-radius:14px;border:1px solid var(--line);background:#fff;font:700 20px inherit;font-family:inherit;cursor:pointer}
+.pad button:active{background:var(--green-t)}
+.streak{display:flex;gap:6px}
+.streak i{width:30px;height:30px;border-radius:9px;background:#eef2ef;display:grid;place-items:center;font-style:normal;font-size:14px}
+.streak i.on{background:var(--amber)}
+.scan-drop{border:2px dashed var(--green);border-radius:var(--r);padding:28px;text-align:center;background:var(--green-t);cursor:pointer}
+
+/* cta + footer */
+.final{background:var(--green);color:#fff;border-radius:28px;padding:56px;text-align:center;position:relative;overflow:hidden}
+.final h2{color:#fff}
+.final::after{content:"";position:absolute;right:-60px;top:-60px;width:240px;height:240px;border-radius:50%;background:rgba(242,169,59,.25)}
+footer{background:var(--ink);color:#b8c8bf;padding:56px 0 28px;margin-top:40px;font-size:14.5px}
+footer h4{color:#fff;margin:0 0 12px;font-size:15px}
+footer a{color:#b8c8bf;text-decoration:none;display:block;padding:3px 0;cursor:pointer}
+footer a:hover{color:#fff}
+.foot-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:28px}
+.legal{border-top:1px solid #2a3a33;margin-top:32px;padding-top:18px;font-size:13px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.mobile-cta{display:none}
+.toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:12px 18px;border-radius:12px;font-size:14px;opacity:0;transition:.3s;z-index:90;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%)}
+
+@media (max-width:960px){
+  .hero-grid,.calc,.dash,.g2{grid-template-columns:1fr}
+  .g3,.g4{grid-template-columns:repeat(2,1fr)}
+  .foot-grid{grid-template-columns:1fr 1fr}
+  .navlinks,.nav-cta .hide-m{display:none}
+  .burger{display:block}
+  .tx-badge{left:10px}
+}
+@media (max-width:600px){
+  section{padding:52px 0}
+  h1{font-size:1.9rem;overflow-wrap:break-word}
+  .logo small{display:none}
+  .tx-badge{display:none}
+  .g3,.g4{grid-template-columns:1fr}
+  .final{padding:36px 22px}
+  .chat-body{height:320px}
+  .mobile-cta{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:50;background:#fff;border-top:1px solid var(--line);padding:10px 14px;gap:10px}
+  .mobile-cta .btn{flex:1;justify-content:center}
+  body{padding-bottom:72px}
+  .plan.pop{transform:none}
+  .side{flex-direction:row;overflow-x:auto}
+  .chapter .bar{display:none}
+}
+</style>
+</head>
+<body>
+
+<div class="concept"><div class="wrap">
+  <span><b>Concept preview</b> by Meridian AI Transformation for Study Buddy Texas · not the live site · demo data only</span>
+  <button class="notes-toggle" onclick="toggleNotes()">Show Meridian notes</button>
+</div></div>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="logo" href="#/"><span class="logo-mark">S</span><span>Study Buddy Texas<small>TEKS-GROUNDED AI TUTOR · GRADES 6–12</small></span></a>
+    <nav class="navlinks">
+      <a href="#/subjects">Subjects</a><a href="#/how">How it works</a><a href="#/pricing">Pricing</a><a href="#/parents">For parents</a><a href="#/faq">FAQ</a>
+    </nav>
+    <div class="nav-cta">
+      <a class="btn btn-ghost btn-sm hide-m" href="#/student">Student login</a>
+      <a class="btn btn-amber btn-sm" href="#/try">Try free</a>
+      <button class="burger" aria-label="Menu" onclick="document.querySelector('.mobile-menu').classList.toggle('open')">☰</button>
+    </div>
+  </div>
+  <div class="mobile-menu" onclick="this.classList.remove('open')">
+    <a href="#/subjects">Subjects</a><a href="#/how">How it works</a><a href="#/pricing">Pricing</a><a href="#/parents">For parents</a><a href="#/student">Student login</a><a href="#/faq">FAQ</a><a href="#/about">About</a>
+  </div>
+</header>
+
+<main id="app"></main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <a class="logo" href="#/" style="color:#fff"><span class="logo-mark">S</span><span>Study Buddy Texas</span></a>
+        <p style="margin-top:14px">Patient, one-on-one tutoring for Texas students in grades 6–12, grounded in TEKS. A supplemental tutor, not a replacement for school.</p>
+        <a href="mailto:support@studybuddytx.com">support@studybuddytx.com</a>
+      </div>
+      <div><h4>Middle school</h4><div id="f-ms"></div></div>
+      <div><h4>High school</h4><div id="f-hs"></div></div>
+      <div><h4>Company</h4><a href="#/how">How it works</a><a href="#/pricing">Pricing</a><a href="#/parents">For parents</a><a href="#/about">About</a><a href="#/faq">FAQ</a><a href="#/student">Student login</a></div>
+    </div>
+    <div class="legal"><span>© 2026 Study Buddy Texas</span><span>Privacy · Terms · Accessibility</span></div>
+  </div>
+</footer>
+
+<div class="mobile-cta"><a class="btn btn-ghost" href="#/pricing">Pricing</a><a class="btn btn-amber" href="#/try">Try free for a day</a></div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ---------------- DATA (facts from studybuddytx.com, Nov 2026; topics/questions illustrative) ---------------- */
+const SUBJECTS = [
+ {id:"ms-math",name:"Math",level:"ms",area:"Math",grades:"Grades 6–8",ico:"📐",col:"#e8f2ec",staar:"STAAR grades 6–8",
+  topics:["Number and operations","Proportionality","Expressions, equations and relationships","Measurement and data","Personal financial literacy"],
+  quiz:[["What is 30% of 80?",["18","24","26","32"],1,"30% = 0.30, and 0.30 × 80 = 24."],
+        ["Solve: 3x + 5 = 20",["x = 3","x = 5","x = 8.3","x = 15"],1,"Subtract 5 to get 3x = 15, then divide by 3: x = 5."],
+        ["12 apples cost $4. How much do 3 apples cost?",["$0.75","$1.00","$1.33","$3.00"],1,"Unit rate: $4 ÷ 12 = $0.33 per apple, so 3 apples = $1.00."]]},
+ {id:"ms-ela",name:"Reading / ELA",level:"ms",area:"Reading & English",grades:"Grades 6–8",ico:"📖",col:"#e9f1fb",staar:"STAAR grades 6–8",
+  topics:["Foundational language skills","Comprehension","Response skills","Multiple genres","Author's purpose and craft","Composition","Inquiry and research"],
+  quiz:[["\"The wind whispered through the trees\" is an example of…",["Simile","Personification","Hyperbole","Alliteration"],1,"The wind is given a human action (whispering), which is personification."],
+        ["The main idea of a passage is…",["The first sentence","The most important point the author makes","The longest paragraph","The title"],1,"The main idea is the central point the author wants readers to understand."],
+        ["Where does a thesis statement usually go in an essay?",["The conclusion","The introduction","A footnote","The title"],1,"A thesis is usually stated in the introduction so the reader knows the argument."]]},
+ {id:"ms-sci",name:"Science",level:"ms",area:"Science",grades:"Grades 6–8",ico:"🔬",col:"#fdf0da",staar:"STAAR grade 8",
+  topics:["Scientific and engineering practices","Matter and energy","Force, motion and energy","Earth and space","Organisms and environments"],
+  quiz:[["What unit measures force?",["Joule","Watt","Newton","Gram"],2,"Force is measured in newtons (N)."],
+        ["Photosynthesis produces…",["Carbon dioxide and water","Glucose and oxygen","Nitrogen","Only heat"],1,"Plants use light, water and CO₂ to make glucose and release oxygen."],
+        ["What causes Earth's seasons?",["Distance from the Sun","The tilt of Earth's axis","The Moon","Ocean currents"],1,"Earth's tilted axis changes how directly sunlight hits each hemisphere."]]},
+ {id:"algebra-1",name:"Algebra I",level:"hs",area:"Math",grades:"High school course",ico:"📐",col:"#e8f2ec",staar:"STAAR EOC",
+  topics:["Linear functions, equations and inequalities","Quadratic functions and equations","Exponential functions and equations","Number and algebraic methods","Functions and their representations"],
+  quiz:[["What is the slope of the line through (1, 2) and (3, 8)?",["2","3","4","6"],1,"Slope = (8 − 2) ÷ (3 − 1) = 6 ÷ 2 = 3."],
+        ["Solve: x² − 9 = 0",["x = 3 only","x = ±3","x = 9","x = ±9"],1,"x² = 9, so x = 3 or x = −3."],
+        ["If f(x) = 2x + 1, what is f(4)?",["7","8","9","10"],2,"f(4) = 2(4) + 1 = 9."]]},
+ {id:"algebra-2",name:"Algebra II",level:"hs",area:"Math",grades:"High school course",ico:"📐",col:"#e8f2ec",
+  topics:["Systems of equations","Quadratic and square root functions","Exponential and logarithmic functions","Cubic, cube root and absolute value functions","Rational functions","Number and algebraic methods"],
+  quiz:[["What is log₂ 8?",["2","3","4","16"],1,"2³ = 8, so log₂ 8 = 3."],
+        ["What is the vertex of y = (x − 2)² + 5?",["(−2, 5)","(2, 5)","(2, −5)","(5, 2)"],1,"Vertex form y = (x − h)² + k has vertex (h, k) = (2, 5)."],
+        ["What is i²?",["1","−1","i","0"],1,"By definition, i = √−1, so i² = −1."]]},
+ {id:"geometry",name:"Geometry",level:"hs",area:"Math",grades:"High school course",ico:"📐",col:"#e8f2ec",
+  topics:["Coordinate and transformational geometry","Logical argument and constructions","Proof and congruence","Similarity, proof and trigonometry","Two- and three-dimensional figures","Circles","Probability"],
+  quiz:[["The interior angles of a triangle add up to…",["90°","180°","270°","360°"],1,"Every triangle's interior angles sum to 180°."],
+        ["A right triangle has legs 6 and 8. The hypotenuse is…",["10","12","14","48"],0,"6² + 8² = 36 + 64 = 100, and √100 = 10."],
+        ["The area of a circle with radius 3 is…",["6π","9π","3π","12π"],1,"Area = πr² = π × 3² = 9π."]]},
+ {id:"english-1",name:"English I",level:"hs",area:"Reading & English",grades:"High school course",ico:"📖",col:"#e9f1fb",staar:"STAAR EOC",
+  topics:["Reading comprehension","Literary analysis","Informational texts","Composition and revision","Research"],
+  quiz:[["A theme is…",["The setting","A message about life the text conveys","The main character","The plot summary"],1,"Theme is the underlying message or insight about life."],
+        ["When the audience knows something a character doesn't, it is…",["Situational irony","Verbal irony","Dramatic irony","Foreshadowing"],2,"That gap in knowledge is dramatic irony."],
+        ["What best supports a claim in an essay?",["Personal opinion","Specific textual evidence","A longer introduction","A rhetorical question"],1,"Claims are strongest when backed by specific evidence from the text."]]},
+ {id:"english-2",name:"English II",level:"hs",area:"Reading & English",grades:"High school course",ico:"📖",col:"#e9f1fb",staar:"STAAR EOC",
+  topics:["Reading comprehension","Rhetoric and argument","Informational texts","Composition and revision","Research"],
+  quiz:[["An appeal to the audience's emotions is called…",["Ethos","Logos","Pathos","Kairos"],2,"Pathos appeals to emotion."],
+        ["\"Her voice was music to his ears\" is a…",["Simile","Metaphor","Onomatopoeia","Oxymoron"],1,"It compares directly without 'like' or 'as', so it is a metaphor."],
+        ["Why include a counterargument?",["To pad length","To address and answer an opposing view","To change topics","To end the essay"],1,"Answering an opposing view makes an argument more convincing."]]},
+ {id:"english-3",name:"English III",level:"hs",area:"Reading & English",grades:"High school course",ico:"📖",col:"#e9f1fb",
+  topics:["American literature","Rhetorical analysis","Argument and synthesis","Composition and revision","Research"],
+  quiz:[["Who wrote The Great Gatsby?",["Ernest Hemingway","F. Scott Fitzgerald","John Steinbeck","Mark Twain"],1,"F. Scott Fitzgerald published The Great Gatsby in 1925."],
+        ["Ethos is an appeal to…",["Emotion","Logic","Credibility","Timing"],2,"Ethos builds trust in the speaker's credibility."],
+        ["A synthesis essay…",["Summarizes one source","Combines several sources to support an argument","Is always fiction","Has no thesis"],1,"Synthesis draws on multiple sources to support a position."]]},
+ {id:"english-4",name:"English IV",level:"hs",area:"Reading & English",grades:"High school course",ico:"📖",col:"#e9f1fb",
+  topics:["British and world literature","Literary analysis","Argument","Composition and revision","Research"],
+  quiz:[["Who wrote Hamlet?",["Charles Dickens","William Shakespeare","Geoffrey Chaucer","John Milton"],1,"Hamlet is a tragedy by William Shakespeare."],
+        ["Tone means…",["The author's attitude toward the subject","The sound of the words","The setting","The rhyme scheme"],0,"Tone is the author's attitude, such as playful, bitter or serious."],
+        ["An annotated bibliography includes…",["Only page numbers","Citations with a short summary or evaluation","Just the title page","Footnotes only"],1,"Each source is cited, then summarized or evaluated."]]},
+ {id:"biology",name:"Biology",level:"hs",area:"Science",grades:"High school course",ico:"🔬",col:"#fdf0da",staar:"STAAR EOC",
+  topics:["Biomolecules and cells","Mechanisms of genetics","Biological evolution","Structures, functions and processes","Interdependence within environmental systems"],
+  quiz:[["Which organelle releases energy for the cell?",["Nucleus","Ribosome","Mitochondria","Golgi body"],2,"Mitochondria carry out cellular respiration to release energy."],
+        ["In DNA, adenine pairs with…",["Cytosine","Guanine","Thymine","Uracil"],2,"A pairs with T; C pairs with G."],
+        ["Natural selection acts on…",["Variation in inherited traits","Learned behaviors only","Rocks","Weather"],0,"Selection favors inherited traits that help survival and reproduction."]]},
+ {id:"chemistry",name:"Chemistry",level:"hs",area:"Science",grades:"High school course",ico:"🔬",col:"#fdf0da",
+  topics:["Matter and the periodic table","Atomic structure and nuclear chemistry","Bonding and nomenclature","Reactions and stoichiometry","Gases, solutions, acids and bases","Thermochemistry"],
+  quiz:[["Avogadro's number is about…",["6.02 × 10²³","3.00 × 10⁸","9.81","1.6 × 10⁻¹⁹"],0,"One mole contains about 6.02 × 10²³ particles."],
+        ["A solution with pH 3 is…",["Neutral","Basic","Acidic","Salty"],2,"pH below 7 is acidic."],
+        ["Balance: _H₂ + O₂ → _H₂O. The coefficient of H₂O is…",["1","2","3","4"],1,"2H₂ + O₂ → 2H₂O balances 4 H and 2 O on each side."]]},
+ {id:"physics",name:"Physics",level:"hs",area:"Science",grades:"High school course",ico:"🔬",col:"#fdf0da",
+  topics:["Kinematics","Forces and Newton's laws","Energy and momentum","Waves","Electricity and magnetism","Atomic and nuclear physics"],
+  quiz:[["A 2 kg object accelerates at 3 m/s². The net force is…",["1.5 N","5 N","6 N","9 N"],2,"F = ma = 2 × 3 = 6 N."],
+        ["A runner covers 100 m in 20 s. Average speed?",["2 m/s","5 m/s","20 m/s","120 m/s"],1,"Speed = distance ÷ time = 100 ÷ 20 = 5 m/s."],
+        ["The SI unit of energy is the…",["Newton","Joule","Watt","Pascal"],1,"Energy is measured in joules (J)."]]},
+ {id:"us-history",name:"US History",level:"hs",area:"Social Studies",grades:"High school course",ico:"🏛️",col:"#fde9e4",staar:"STAAR EOC",
+  topics:["Gilded Age and industrialization","Progressive Era and World War I","1920s and the Great Depression","World War II","The Cold War","Civil rights","1970s to the present"],
+  quiz:[["Which president led the New Deal?",["Herbert Hoover","Franklin D. Roosevelt","Harry Truman","Woodrow Wilson"],1,"Franklin D. Roosevelt launched the New Deal in the 1930s."],
+        ["Brown v. Board of Education was decided in…",["1945","1954","1964","1968"],1,"The Supreme Court ruled school segregation unconstitutional in 1954."],
+        ["The 19th Amendment guaranteed…",["Income tax","Women's right to vote","Prohibition","Direct election of senators"],1,"Ratified in 1920, it protected women's right to vote."]]}
+];
+const PLANS = {
+ ms:[{n:"Basic",p:29,f:["Unlimited text tutoring chat","Practice quizzes"]},
+     {n:"Standard",p:39,pop:1,f:["Everything in Basic","Photo homework scanning","Weekly parent summary"]},
+     {n:"Premium",p:49,f:["Everything in Standard","STAAR test prep mode","Priority, faster responses"]}],
+ hs:[{n:"Basic",p:39,f:["Unlimited text tutoring chat","Practice quizzes"]},
+     {n:"Standard",p:49,pop:1,f:["Everything in Basic","Photo homework scanning","Weekly parent summary"]},
+     {n:"Premium",p:59,f:["Everything in Standard","SAT/ACT test prep mode","Priority, faster responses"]}]
+};
+const FAQ = [
+ ["Is Study Buddy Texas a replacement for school?","No. It's a supplemental tutor. It helps your student with exactly what they're learning in class this week, grounded in Texas TEKS standards, not generic worksheets."],
+ ["Can we try it before paying?","Yes. Try any plan free for a day before your card is charged, and cancel anytime during the trial to pay nothing. You can also try a quick session right now with no signup."],
+ ["What if it isn't a fit?","Cancel within your first 7 days for a full refund, no questions asked. Cancel later in a billing cycle and you get half that month's payment back."],
+ ["Do parents see every chat?","No. Parents get a simple weekly summary of progress and struggles. Full chat transcripts are never shared, so students can ask questions without feeling watched."],
+ ["Which grades and subjects are covered?","Grades 6–12: middle school Math, Reading/ELA and Science, plus 11 high school courses: Algebra I, Algebra II, Geometry, English I–IV, Biology, Chemistry, Physics and US History."],
+ ["Does it help with STAAR, SAT and ACT?","Premium includes STAAR test prep mode for middle school and SAT/ACT prep mode for high school."],
+ ["How do students log in?","Parents create the account, then set up each student with a simple 4-digit PIN."],
+ ["Do siblings get a discount?","Yes. Every child after your first is 15% off, applied automatically."],
+ ["Is there a real person I can talk to?","Yes. Billing questions and concerns go to a real person at support@studybuddytx.com. We reply by the next business day."]
+];
+
+/* ---------------- helpers ---------------- */
+const $ = s => document.querySelector(s);
+const app = $("#app");
+const subj = id => SUBJECTS.find(s=>s.id===id);
+function toast(t){const el=$("#toast");el.textContent=t;el.classList.add("show");clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove("show"),2400)}
+function toggleNotes(){document.body.classList.toggle("notes");$(".notes-toggle").textContent=document.body.classList.contains("notes")?"Hide Meridian notes":"Show Meridian notes"}
+const note = t => `<div class="mnote">${t}</div>`;
+const subjCard = s => `<a class="card subj" href="#/subject/${s.id}">
+  <div class="ico" style="background:${s.col}">${s.ico}</div>
+  <div>${s.staar?`<span class="tag amber">${s.staar}</span> `:""}<span class="tag">${s.level==="ms"?"Grades 6–8":"High school"}</span></div>
+  <h3>${s.level==="ms"?"Middle School "+s.name:s.name}</h3>
+  <div class="muted" style="font-size:14px">${s.topics.length} TEKS chapters · practice quizzes</div>
+  <span class="go">Open course →</span></a>`;
+
+/* chat */
+function chatHTML(id,opts={}){return `
+<div class="chat" id="${id}">
+  <div class="chat-head"><div class="avatar">SB</div><div><b>Study Buddy</b><div class="status">${opts.sub||"Ready to help"}</div></div></div>
+  <div class="chat-body"></div>
+  <div class="chat-suggest"></div>
+  <div class="chat-input"><button class="icon-btn" title="Scan homework photo" data-scan>📷</button><input placeholder="Type a problem, e.g. 4x + 6 = 30" aria-label="Message"><button class="btn btn-green btn-sm" data-send>Send</button></div>
+  <div class="demo-label">Demo replies for preview · the full tutor is AI-powered</div>
+</div>`}
+function initChat(id,starter){
+  const root=document.getElementById(id); if(!root) return;
+  const body=root.querySelector(".chat-body"), input=root.querySelector("input"), sug=root.querySelector(".chat-suggest");
+  const st={mode:null,ans:null,tries:0};
+  const add=(html,who="bot")=>{const m=document.createElement("div");m.className="msg "+who;m.innerHTML=html;body.appendChild(m);body.scrollTop=body.scrollHeight};
+  const bot=(arr,done)=>{let i=0;const next=()=>{if(i>=arr.length){done&&done();return}
+    const t=document.createElement("div");t.className="msg bot";t.innerHTML='<span class="typing"><i></i><i></i><i></i></span>';body.appendChild(t);body.scrollTop=body.scrollHeight;
+    setTimeout(()=>{t.remove();add(arr[i++]);next()},Math.min(1400,500+arr[i].length*8))};next()};
+  const chips=list=>{sug.innerHTML="";list.forEach(c=>{const b=document.createElement("button");b.textContent=c;b.onclick=()=>send(c);sug.appendChild(b)})};
+  function parseLinear(t){
+    const s=t.replace(/\s+/g,"").replace(/−/g,"-");
+    const m=s.match(/^(-?\d*\.?\d*)x([+-]\d+\.?\d*)?=(-?\d+\.?\d*)$/i); if(!m) return null;
+    let a=m[1]===""?1:m[1]==="-"?-1:parseFloat(m[1]); const b=m[2]?parseFloat(m[2]):0, c=parseFloat(m[3]);
+    if(!a||isNaN(a)||isNaN(c)) return null; return {a,b,c};
+  }
+  const fmt=n=>Math.round(n*100)/100;
+  function send(text){
+    text=(text||input.value).trim(); if(!text) return; input.value=""; add(text.replace(/</g,"&lt;"),"me"); sug.innerHTML="";
+    const low=text.toLowerCase();
+    if(st.mode==="answer"){
+      const v=parseFloat(low.replace(/[^0-9.\-]/g,""));
+      if(!isNaN(v)&&Math.abs(v-st.ans)<0.01){st.mode=null;bot([`🎉 Yes! x = ${fmt(st.ans)}. Nice work.`,`Quick check: plug it back in. Does the left side equal the right side? That's how you know you're right on a test.`,`Want another one, or a 3-question practice quiz?`],()=>chips(["Give me another","Practice quiz","Explain slope"]));return}
+      st.tries++; if(st.tries<2){bot([`Close, but not quite. Look again at the last step: what do you get when you divide both sides by the number in front of x?`]);return}
+      st.mode=null;bot([`That's okay, this is how learning works. The answer is x = ${fmt(st.ans)}.`,`I'll note "dividing at the last step" as something to practice. Want to try a similar one?`],()=>chips(["Give me another","Practice quiz"]));return;
+    }
+    const eq=parseLinear(text);
+    if(eq){
+      const {a,b,c}=eq, rhs=c-b, ans=rhs/a; st.mode="answer";st.ans=ans;st.tries=0;
+      bot([`Great problem. Let's solve it together. I won't just give you the answer. 🙂`,
+        `<span class="step">Step 1</span>Our goal is to get x by itself. What's added or subtracted next to ${a===1?"x":a+"x"}? It's <b>${b>=0?"+ "+b:"− "+Math.abs(b)}</b>.`,
+        `<span class="step">Step 2</span>${b>=0?"Subtract "+b:"Add "+Math.abs(b)} on both sides: ${a===1?"x":a+"x"} = <b>${fmt(rhs)}</b>.`,
+        `<span class="step">Your turn</span>Now divide both sides by ${a}. What is x?`]);return;
+    }
+    if(/another|more/.test(low)){const a=2+Math.floor(Math.random()*6),x=1+Math.floor(Math.random()*9),b=1+Math.floor(Math.random()*12);const p=`${a}x + ${b} = ${a*x+b}`;add(`Here's one: <b>${p}</b>. Type it in and we'll solve it step by step.`);chips([p]);return}
+    if(/quiz|practice/.test(low)){bot([`Practice quizzes are built for every course. Opening an Algebra I quiz for you…`],()=>setTimeout(()=>location.hash="#/subject/algebra-1?quiz",600));return}
+    if(/slope/.test(low)){bot([`Slope is how steep a line is: <b>rise over run</b>.`,`From (1, 2) to (3, 8): rise = 8 − 2 = 6, run = 3 − 1 = 2. So slope = 6 ÷ 2 = <b>3</b>.`,`Think of it as "for every 1 step right, the line goes up 3."`],()=>chips(["Give me another","Practice quiz"]));return}
+    if(/price|cost|pricing|how much/.test(low)){bot([`Middle school plans are $29, $39 or $49 a month. High school plans are $39, $49 or $59. Siblings are 15% off.`,`You can try any plan free for a day before your card is charged.`],()=>chips(["See pricing","Free trial"]));return}
+    if(/see pricing/.test(low)){location.hash="#/pricing";return}
+    if(/trial|free/.test(low)){bot([`Try any plan free for a day before your card is charged. Cancel anytime during the trial and you pay nothing. And within your first 7 days you can still get a full refund.`]);return}
+    if(/photo|scan/.test(low)){scan();return}
+    const hit=SUBJECTS.find(s=>low.includes(s.name.toLowerCase().split(" ")[0])||low.includes(s.id.replace("-"," ")));
+    if(hit){bot([`${hit.level==="ms"?"Middle school "+hit.name:hit.name}, great choice. The chapters follow the Texas TEKS strands, starting with <b>${hit.topics[0]}</b>.`,`Want to try a quick practice quiz in ${hit.name}?`],()=>chips([`Open ${hit.name} quiz`]));st.quiz=hit.id;return}
+    if(/open .* quiz/.test(low)&&st.quiz){location.hash=`#/subject/${st.quiz}?quiz`;return}
+    bot([`I can help with that. In this demo I'm best at equations like <b>3x + 5 = 20</b>. Or tell me a subject like "Biology" or "Algebra I".`],()=>chips(["3x + 5 = 20","Biology","Explain slope"]));
+  }
+  function scan(){add("📷 <i>homework-page.jpg</i>","me");bot([`Reading your homework photo…`,`I found this problem: <b>5x − 4 = 21</b>. Want to work through it together?`],()=>chips(["5x - 4 = 21"]))}
+  root.querySelector("[data-send]").onclick=()=>send();
+  input.addEventListener("keydown",e=>{if(e.key==="Enter")send()});
+  root.querySelector("[data-scan]").onclick=scan;
+  bot(starter||[`Hi! I'm your Study Buddy. 👋`,`Tell me what you're working on, like an equation or a subject. I'll walk you through it step by step.`],()=>chips(["3x + 5 = 20","Explain slope","Biology","How much is it?"]));
+}
+
+/* ---------------- quiz engine ---------------- */
+function quizHTML(s){return `<div class="card" id="quiz"><div class="eyebrow">${s.level==="ms"?"Middle School "+s.name:s.name} · practice quiz</div><div class="progress"><i style="width:0"></i></div><div id="qz"></div></div>`}
+function runQuiz(s){
+  let i=0,score=0; const box=$("#qz"),bar=$("#quiz .progress i");
+  const show=()=>{
+    bar.style.width=(i/s.quiz.length*100)+"%";
+    if(i>=s.quiz.length){box.innerHTML=`<div class="center"><div class="kpi">${score}/${s.quiz.length}</div><p class="muted">${score===s.quiz.length?"Perfect score! 🎉":"Nice effort. Your tutor will focus on what you missed."}</p>
+      <div class="mnote">In the real app this result flows into the parent's weekly summary as "wins" and "practice next", without sharing the chat.</div>
+      <button class="btn btn-green" onclick="location.hash='#/subject/${s.id}?quiz';route()">Try again</button> <a class="btn btn-amber" href="#/pricing">Unlock unlimited quizzes</a></div>`;return}
+    const [q,opts,ans,why]=s.quiz[i];
+    box.innerHTML=`<div class="muted" style="font-size:13px">Question ${i+1} of ${s.quiz.length}</div><div class="quiz-q">${q}</div>`+opts.map((o,k)=>`<button class="opt" data-k="${k}">${o}</button>`).join("")+`<div id="ex"></div>`;
+    box.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{
+      const k=+b.dataset.k; box.querySelectorAll(".opt").forEach(x=>x.disabled=true);
+      b.classList.add(k===ans?"right":"wrong"); box.querySelectorAll(".opt")[ans].classList.add("right"); if(k===ans)score++;
+      $("#ex").innerHTML=`<div class="explain"><b>${k===ans?"Correct!":"Not quite."}</b> ${why}</div><div style="margin-top:14px"><button class="btn btn-green btn-sm" id="nx">${i+1<s.quiz.length?"Next question →":"See my score"}</button></div>`;
+      $("#nx").onclick=()=>{i++;show()};
+    });
+  };show();
+}
+
+/* ---------------- pages ---------------- */
+const Pages = {};
+
+Pages.home = () => `
+<section class="hero"><div class="wrap hero-grid">
+  <div>
+    <span class="chip">🎉 Now open to families across Texas</span>
+    <h1 style="margin-top:16px">The patient AI tutor for <em>Texas students</em>, <span style="white-space:nowrap">grades 6–12.</span></h1>
+    <p class="lead">One-on-one help with exactly what your student is learning in class this week, grounded in TEKS. From Pre-Algebra homework to STAAR, SAT and ACT prep.</p>
+    ${note("The headline now says what it is and where (AI tutor + Texas + grades 6–12). That's the strongest search signal on the page and fixes the 'Study Buddy' name collision.")}
+    <div class="ctas"><a class="btn btn-amber" href="#/try">Try it free for a day →</a><a class="btn btn-ghost" href="#/pricing">See plans from $29/mo</a></div>
+    <div class="trust"><span class="chip">✓ TEKS-grounded</span><span class="chip">✓ 14 subjects</span><span class="chip">✓ 7-day full refund</span><span class="chip">✓ Weekly parent summary</span></div>
+  </div>
+  <div class="hero-demo">${chatHTML("heroChat",{sub:"Algebra · step by step"})}
+    <div class="tx-badge"><span style="font-size:26px">⭐</span><div><b>Built for Texas</b>Tuned to TEKS standards</div></div>
+  </div>
+</div></section>
+<div class="strip"><div class="wrap">
+  <div><b>14</b><span>TEKS subjects</span></div><div><b>6–12</b><span>grades covered</span></div><div><b>$29</b><span>plans start per month</span></div><div><b>1 day</b><span>free trial, no signup</span></div><div><b>7 days</b><span>full refund window</span></div>
+</div></div>
+<section><div class="wrap">
+  <div class="center"><div class="eyebrow">Every subject</div><h2>Find your student's course</h2><p class="lead">Each course has its own page, built on the official Texas TEKS strands, with a practice quiz you can take right now.</p></div>
+  ${note("Each of the 14 subjects now gets its own page and URL. Today they share one page, so a parent searching 'Algebra I STAAR help Texas' can't find you. That's 14 new ways in from Google and AI assistants.")}
+  <div class="grid g4" style="margin-top:30px">${["algebra-1","biology","english-1","us-history","ms-math","ms-ela","ms-sci","geometry"].map(id=>subjCard(subj(id))).join("")}</div>
+  <div class="center" style="margin-top:28px"><a class="btn btn-green" href="#/subjects">See all 14 subjects →</a></div>
+</div></section>
+<section style="background:#fff"><div class="wrap">
+  <div class="center"><div class="eyebrow">How it works</div><h2>Up and running in minutes</h2></div>
+  <div class="grid g4" style="margin-top:44px">${steps()}</div>
+</div></section>
+<section><div class="wrap grid g2" style="align-items:center;gap:48px">
+  <div>
+    <div class="eyebrow">For parents</div><h2>You see the progress. They keep their privacy.</h2>
+    <p class="lead">Every week you get a simple summary: what your student worked on, where they're strong, and what to practice next. Full chat transcripts are never shared, so kids ask the questions they'd be shy to ask in class.</p>
+    ${note("Your 'no transcripts' promise is a real differentiator. Here it's turned into a visual, so parents can see what they'll actually get.")}
+    <a class="btn btn-green" href="#/parents">See a sample weekly summary →</a>
+  </div>
+  ${summaryCard()}
+</div></section>
+<section style="background:#fff"><div class="wrap">${calculator()}</div></section>
+<section><div class="wrap">
+  <div class="center"><div class="eyebrow">Low risk</div><h2>Trials, refunds and real support</h2></div>
+  <div class="grid g4" style="margin-top:30px">${guarantees()}</div>
+</div></section>
+<section style="background:#fff"><div class="wrap grid g2" style="align-items:center;gap:48px">
+  <div class="slot" style="min-height:320px">Founder photo<br><span style="font-weight:500">owner to supply · a real face builds parent trust</span></div>
+  <div><div class="eyebrow">A note from the founder</div>
+    <p class="display" style="font-size:1.5rem;line-height:1.35">"Middle school is when kids either fall in love with learning or start to dread it. I wanted every family across Texas to have a patient, always-available tutor in their corner, not just the families who could afford it."</p>
+    <p><b>[Founder name]</b>, Founder, Study Buddy Texas</p>
+    ${note("Today the founder note is unsigned. Parents buy from people. A name, a face and a Texas connection are the cheapest trust upgrade on the site.")}
+  </div>
+</div></section>
+<section><div class="wrap">
+  <div class="center"><div class="eyebrow">What parents say</div><h2>Real reviews from Texas families</h2></div>
+  <div class="grid g3" style="margin-top:30px">${[1,2,3].map(()=>`<div class="slot">Real parent review<br><span style="font-weight:500">collected automatically after week 2 of a subscription</span></div>`).join("")}</div>
+  ${note("No fake testimonials. Meridian sets up an automatic review request (email/SMS) after a family's second week, feeding Google reviews and this section.")}
+</div></section>
+<section><div class="wrap">${finalCTA()}</div></section>`;
+
+function steps(){return [["Create a parent account","Choose middle or high school and a plan. Try any plan free for a day."],["Set up your student","Pay securely, then give each student a simple 4-digit PIN."],["Your student learns","They chat with their tutor, scan homework photos and take practice quizzes."],["You get a weekly summary","Progress and struggles, in plain English. Never the full chats."]].map((s,i)=>`<div class="card step-card"><div class="step-num">${i+1}</div><h3>${s[0]}</h3><p class="muted">${s[1]}</p></div>`).join("")}
+function guarantees(){return [["⏱️","1-day free trial","Try any plan free for a day before your card is charged. Cancel during the trial and pay nothing."],["↩️","7-day full refund","Cancel within your first 7 days for a full refund, no questions asked."],["½","50% mid-month refund","Cancel later in a billing cycle and get half that month's payment back."],["🙋","A real human","Billing questions go to a real person, not a bot. Reply by the next business day."]].map(g=>`<div class="card guar"><div class="g-ico">${g[0]}</div><div><h3 style="font-size:1.05rem">${g[1]}</h3><p class="muted" style="font-size:14.5px;margin:0">${g[2]}</p></div></div>`).join("")}
+function summaryCard(){return `<div class="card"><div style="display:flex;justify-content:space-between;align-items:center"><div><div class="eyebrow" style="margin:0">Weekly summary · sample</div><h3 style="margin:4px 0 0">Maya, Grade 7</h3></div><span class="tag">Standard plan</span></div>
+  <div class="bars">${[["Mon",40],["Tue",75],["Wed",30],["Thu",90],["Fri",55],["Sat",20],["Sun",65]].map(d=>`<div style="height:${d[1]}%"><span>${d[0]}</span></div>`).join("")}</div>
+  <div class="grid g2" style="margin-top:34px;gap:12px">
+    <div style="background:var(--green-t);border-radius:12px;padding:12px"><b>✅ Wins</b><div class="muted" style="font-size:14px">Solved two-step equations on her own. Quiz score up from 2/3 to 3/3.</div></div>
+    <div style="background:#fdf0da;border-radius:12px;padding:12px"><b>🎯 Practice next</b><div class="muted" style="font-size:14px">Percent problems. Mixing up "of" and "off".</div></div>
+  </div><p class="muted" style="font-size:12.5px;margin:12px 0 0">🔒 Summary only. Full chat transcripts are never shared. Sample data.</p></div>`}
+function calculator(){return `<div class="calc">
+  <div><div class="eyebrow">Do the math</div><h2>Less than a single tutoring session</h2>
+    <p class="lead">Many Texas families pay $60 to $100 a session for an in-person tutor their kid sees once a week. See what you'd spend instead.</p>
+    <label>Price per in-person session: <span id="cv-p">$80</span></label><input type="range" id="c-p" min="40" max="120" step="5" value="80">
+    <label>Sessions per week: <span id="cv-s">1</span></label><input type="range" id="c-s" min="1" max="4" value="1">
+    <label>Study Buddy plan</label><select id="c-plan">${["ms","hs"].map(l=>PLANS[l].map(p=>`<option value="${p.p}" ${l==="ms"&&p.n==="Standard"?"selected":""}>${l==="ms"?"Middle school":"High school"} ${p.n}: $${p.p}/mo</option>`).join("")).join("")}</select>
+    ${note("Interactive tools keep parents on the page longer and turn your founder's '$60 to $100 a session' point into a number they can feel.")}
+  </div>
+  <div class="save-out"><div style="font-size:14px;opacity:.9">You'd save about</div><div class="big" id="c-out">$0</div><div style="font-size:14px;opacity:.9;margin-bottom:16px">per month</div>
+    <div class="compare-row"><span>In-person tutoring (monthly)</span><b id="c-a"></b></div>
+    <div class="compare-row"><span>Study Buddy Texas</span><b id="c-b"></b></div>
+    <div class="compare-row" style="border:0"><span>Available</span><b>Every day, any hour</b></div>
+    <a class="btn btn-amber" style="margin-top:18px" href="#/try">Try it free for a day</a></div>
+</div>`}
+function bindCalc(){const p=$("#c-p");if(!p)return;const s=$("#c-s"),pl=$("#c-plan");
+  const up=()=>{const a=Math.round(p.value*s.value*4.33),b=+pl.value;$("#cv-p").textContent="$"+p.value;$("#cv-s").textContent=s.value;$("#c-a").textContent="$"+a.toLocaleString();$("#c-b").textContent="$"+b;$("#c-out").textContent="$"+Math.max(0,a-b).toLocaleString()};
+  [p,s,pl].forEach(e=>e.oninput=up);up()}
+function finalCTA(){return `<div class="final"><h2>Give your student a patient tutor at home</h2><p style="opacity:.9;max-width:540px;margin:0 auto 24px">Try it free for a day. No signup needed to start. Full refund within 7 days if it's not a fit.</p><a class="btn btn-amber" href="#/try">Start a free session →</a></div>`}
+
+Pages.subjects = () => `<section><div class="wrap">
+  <div class="center"><div class="eyebrow">Subjects</div><h1>Every subject Study Buddy tutors</h1><p class="lead">14 subjects: 3 for middle school (grades 6–8) and 11 high school courses. Chapters follow the official Texas TEKS strands.</p></div>
+  <input class="search" id="s-q" placeholder="Search a subject, e.g. chemistry">
+  <div class="filters" id="s-f"><button class="on" data-f="all">All</button><button data-f="ms">Middle school</button><button data-f="hs">High school</button><button data-f="Math">Math</button><button data-f="Reading & English">Reading & English</button><button data-f="Science">Science</button><button data-f="Social Studies">Social Studies</button><button data-f="staar">STAAR tested</button></div>
+  <div class="grid g4" id="s-grid"></div>
+</div></section>`;
+function bindSubjects(){const g=$("#s-grid");if(!g)return;let f="all";
+  const draw=()=>{const q=$("#s-q").value.toLowerCase();const list=SUBJECTS.filter(s=>(f==="all"||s.level===f||s.area===f||(f==="staar"&&s.staar))&&(s.name.toLowerCase().includes(q)||s.topics.join(" ").toLowerCase().includes(q)));
+    g.innerHTML=list.length?list.map(subjCard).join(""):`<p class="muted center" style="grid-column:1/-1">No subject matches "${q}".</p>`};
+  $("#s-f").onclick=e=>{if(e.target.dataset.f){f=e.target.dataset.f;$("#s-f").querySelectorAll("button").forEach(b=>b.classList.toggle("on",b===e.target));draw()}};
+  $("#s-q").oninput=draw;draw()}
+
+Pages.subject = (id,q) => {const s=subj(id);if(!s)return Pages.notfound();const full=s.level==="ms"?"Middle School "+s.name:s.name;
+ return `<section><div class="wrap">
+  <div class="crumbs"><a href="#/">Home</a> › <a href="#/subjects">Subjects</a> › ${full}</div>
+  <div class="grid g2" style="gap:40px;align-items:start">
+   <div>
+    <div>${s.staar?`<span class="tag amber">${s.staar}</span> `:""}<span class="tag">${s.grades}</span></div>
+    <h1 style="margin-top:12px">${full} tutoring for Texas students</h1>
+    <p class="lead">Patient, step-by-step help with ${full} homework and test prep, organized around the Texas TEKS strands your student is learning in class.</p>
+    ${note(`This is what each subject page looks like: its own URL, title and FAQ, written for searches like "${s.name} ${s.staar?s.staar+" ":""}help Texas". 14 pages like this, instead of one.`)}
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin:20px 0 30px"><a class="btn btn-amber" href="#/subject/${s.id}?quiz" onclick="setTimeout(()=>$('#quiz').scrollIntoView({behavior:'smooth'}),50)">Take the free practice quiz</a><a class="btn btn-ghost" href="#/try">Ask the tutor</a></div>
+    <h3>Chapters</h3><p class="muted" style="font-size:13px">Chapters follow TEKS strands. Progress bars show sample student data.</p>
+    <div class="chapters">${s.topics.map((t,i)=>`<div class="chapter"><span>${t}</span><span class="bar"><i style="width:${[82,64,45,28,12,5,0][i]||0}%"></i></span></div>`).join("")}</div>
+   </div>
+   <div>${quizHTML(s)}
+    <div class="card" style="margin-top:20px"><h3>${full}: common questions</h3>
+     <details><summary>Does this follow what's taught in Texas classrooms?</summary><p>Yes. Chapters are organized around the official TEKS strands for ${full}. It's a supplemental tutor, not a replacement for school or a specific textbook.</p></details>
+     ${s.staar?`<details><summary>Can it help with the ${s.staar}?</summary><p>Yes. Practice quizzes cover every chapter, and Premium adds a dedicated STAAR test prep mode${s.level==="hs"?" (high school Premium also includes SAT/ACT prep)":""}.</p></details>`:""}
+     <details><summary>Can my student scan a homework photo?</summary><p>Yes, on Standard and Premium. Snap the problem and the tutor walks through it step by step.</p></details>
+    </div>
+   </div>
+  </div>
+ </div></section>
+ <section style="background:#fff"><div class="wrap"><h2>Other ${s.area} courses</h2><div class="grid g4" style="margin-top:20px">${SUBJECTS.filter(x=>x.area===s.area&&x.id!==s.id).slice(0,4).map(subjCard).join("")}</div></div></section>`};
+
+Pages.how = () => `<section><div class="wrap">
+  <div class="center"><div class="eyebrow">How it works</div><h1>A patient tutor, a simple setup</h1><p class="lead">Built so parents stay informed and students feel safe asking anything.</p></div>
+  <div class="grid g4" style="margin-top:48px">${steps()}</div></div></section>
+<section style="background:#fff"><div class="wrap grid g2" style="gap:40px;align-items:center">
+  <div><div class="eyebrow">Photo homework scanning</div><h2>Stuck on a worksheet? Snap it.</h2><p class="lead">On Standard and Premium, students take a photo of the problem and the tutor walks through it step by step, instead of handing over the answer.</p></div>
+  <div class="scan-drop" onclick="scanDemo(this)"><div style="font-size:40px">📷</div><b>Tap to try a sample scan</b><div class="muted" style="font-size:14px">Demo, no upload needed</div></div>
+</div></section>
+<section><div class="wrap grid g3">
+  <div class="card"><h3>🧭 Guided, not given</h3><p class="muted">The tutor asks the next question instead of handing over answers, so understanding sticks for the test.</p></div>
+  <div class="card"><h3>📚 Grounded in TEKS</h3><p class="muted">Chapters match the official Texas TEKS strands for each grade and course.</p></div>
+  <div class="card"><h3>🔒 Private by design</h3><p class="muted">Parents get summaries, never transcripts. Students log in with a simple 4-digit PIN.</p></div>
+</div></section><section><div class="wrap">${finalCTA()}</div></section>`;
+window.scanDemo=el=>{el.innerHTML=`<div style="font-size:40px">🔍</div><b>Reading the problem…</b>`;setTimeout(()=>{el.innerHTML=`<div style="text-align:left"><span class="tag">Found on the page</span><p class="display" style="font-size:1.4rem;margin:10px 0">5x − 4 = 21</p><p class="muted">Step 1: What do we do to undo the "− 4"? Add 4 to both sides, which gives 5x = 25. Now, what's x?</p><a class="btn btn-green btn-sm" href="#/try">Finish it with the tutor →</a></div>`},1400)};
+
+Pages.pricing = () => `<section><div class="wrap center">
+  <div class="eyebrow">Pricing</div><h1>Simple, family-friendly pricing</h1><p class="lead">Less than the cost of a single in-person tutoring session. Try any plan free for a day.</p>
+  <div class="toggle" id="lvl"><button class="on" data-l="ms">Middle school (6–8)</button><button data-l="hs">High school (9–12)</button></div>
+  <div class="grid g3" id="plans" style="text-align:left"></div>
+  ${note("The middle/high school toggle replaces two stacked tables, and the sibling calculator shows the 15% discount instead of just describing it.")}
+</div></section>
+<section style="background:#fff"><div class="wrap grid g2" style="gap:40px;align-items:center">
+  <div><div class="eyebrow">Siblings</div><h2>More than one student?</h2><p class="lead">Every child after your first is 15% off, applied automatically.</p>
+   <label style="font-weight:600">Number of students: <span id="kv">2</span></label><input type="range" id="kids" min="1" max="5" value="2" style="width:100%;accent-color:var(--green)">
+   <label style="font-weight:600;display:block;margin-top:14px">Plan</label><select id="kplan" style="width:100%;padding:10px;border-radius:10px;border:1px solid var(--line);font:inherit">${["ms","hs"].map(l=>PLANS[l].map(p=>`<option value="${p.p}" ${p.pop&&l==="ms"?"selected":""}>${l==="ms"?"Middle school":"High school"} ${p.n}: $${p.p}/mo</option>`).join("")).join("")}</select></div>
+  <div class="save-out"><div style="font-size:14px;opacity:.9">Family total</div><div class="big" id="ktot">$0</div><div style="font-size:14px;opacity:.9">per month · you save <b id="ksave">$0</b></div></div>
+</div></section>
+<section><div class="wrap"><div class="grid g4">${guarantees()}</div></div></section>
+<section style="background:#fff"><div class="wrap">${calculator()}</div></section>`;
+function bindPricing(){const box=$("#plans");if(!box)return;
+ const draw=l=>{box.innerHTML=PLANS[l].map(p=>`<div class="card plan ${p.pop?"pop":""}">${p.pop?'<span class="pop-tag">Most popular</span>':""}<h3>${p.n}</h3><div class="price">$${p.p}<small>/mo</small></div><ul>${p.f.map(x=>`<li>${x}</li>`).join("")}</ul><button class="btn ${p.pop?"btn-amber":"btn-green"}" style="justify-content:center;margin-top:auto" onclick="toast('Concept preview: this opens the ${p.n} free trial checkout')">Start free trial</button></div>`).join("")};
+ $("#lvl").onclick=e=>{const l=e.target.dataset.l;if(!l)return;$("#lvl").querySelectorAll("button").forEach(b=>b.classList.toggle("on",b===e.target));draw(l)};draw("ms");
+ const k=$("#kids"),kp=$("#kplan");const up=()=>{const n=+k.value,p=+kp.value,tot=p+(n-1)*p*0.85;$("#kv").textContent=n;$("#ktot").textContent="$"+tot.toFixed(2);$("#ksave").textContent="$"+(n*p-tot).toFixed(2)};k.oninput=kp.oninput=up;up()}
+
+Pages.parents = () => `<section><div class="wrap">
+  <div class="center"><div class="eyebrow">Parent dashboard · preview</div><h1>Know how they're doing, without reading every chat</h1></div>
+  ${note("A parent dashboard preview sells the Standard plan's weekly summary better than a checkmark in a pricing table.")}
+  <div class="dash" style="margin-top:30px">
+   <div class="side"><div style="font-weight:700;color:#fff;padding:6px 12px 12px">The Garcia family</div><a class="on" data-kid="0">👧 Maya · Grade 7</a><a data-kid="1">👦 Leo · Grade 10</a><a onclick="toast('Concept preview: billing lives here')">💳 Billing</a><a onclick="toast('Concept preview: support@studybuddytx.com')">🙋 Support</a></div>
+   <div id="pd"></div>
+  </div>
+  <p class="muted center" style="font-size:13px;margin-top:16px">Sample family and data for illustration.</p>
+</div></section>`;
+const KIDS=[{n:"Maya",g:"Grade 7",plan:"Middle school Standard",hrs:"3h 40m",q:"9/11",bars:[40,75,30,90,55,20,65],subs:[["Math",72],["Reading / ELA",58],["Science",35]],win:"Solved two-step equations on her own. Quiz score up from 2/3 to 3/3.",next:"Percent problems: mixing up \"of\" and \"off\"."},
+            {n:"Leo",g:"Grade 10",plan:"High school Premium",hrs:"5h 10m",q:"14/18",bars:[60,30,80,70,45,90,25],subs:[["Algebra II",64],["Chemistry",51],["English II",77]],win:"Balanced chemical equations on the first try three times this week.",next:"Logarithm rules before Friday's quiz. SAT practice set 2 is ready."}];
+function bindParents(){const pd=$("#pd");if(!pd)return;const draw=i=>{const k=KIDS[i];pd.innerHTML=`
+ <div class="grid g3"><div class="card"><div class="muted" style="font-size:13px">Time learning this week</div><div class="kpi">${k.hrs}</div></div><div class="card"><div class="muted" style="font-size:13px">Quiz questions right</div><div class="kpi">${k.q}</div></div><div class="card"><div class="muted" style="font-size:13px">Plan</div><div style="font-weight:700;margin-top:10px">${k.plan}</div></div></div>
+ <div class="grid g2" style="margin-top:20px"><div class="card"><h3>${k.n}'s week</h3><div class="bars">${k.bars.map((v,j)=>`<div style="height:${v}%"><span>${"MTWTFSS"[j]}</span></div>`).join("")}</div></div>
+ <div class="card"><h3>Progress by subject</h3>${k.subs.map(s=>`<div style="margin:14px 0"><div style="display:flex;justify-content:space-between;font-size:14px"><b>${s[0]}</b><span>${s[1]}%</span></div><div class="progress" style="margin:6px 0 0"><i style="width:${s[1]}%;background:var(--green)"></i></div></div>`).join("")}</div></div>
+ <div class="grid g2" style="margin-top:20px"><div class="card" style="background:var(--green-t)"><b>✅ Wins</b><p class="muted" style="margin:6px 0 0">${k.win}</p></div><div class="card" style="background:#fdf0da"><b>🎯 Practice next</b><p class="muted" style="margin:6px 0 0">${k.next}</p></div></div>
+ <p class="muted" style="font-size:13px;margin-top:14px">🔒 Full chat transcripts are never shared, only this summary.</p>`};
+ document.querySelectorAll(".side [data-kid]").forEach(a=>a.onclick=()=>{document.querySelectorAll(".side [data-kid]").forEach(x=>x.classList.toggle("on",x===a));draw(+a.dataset.kid)});draw(0)}
+
+Pages.try = () => `<section><div class="wrap grid g2" style="gap:44px;align-items:start">
+  <div><div class="eyebrow">Free session · no signup</div><h1>Try your Study Buddy right now</h1>
+   <p class="lead">Type a math problem, pick a subject, or tap the camera to try a sample homework scan.</p>
+   ${note("A working demo on the page lets parents and students feel the product before signing up. In the real build, this connects to your live tutor with a session limit.")}
+   <div class="card" style="margin-top:20px"><b>Try these</b><ul class="muted" style="margin:10px 0 0;padding-left:18px"><li>Type <b>7x + 3 = 38</b></li><li>Ask <b>explain slope</b></li><li>Type <b>Biology</b> or <b>Chemistry</b></li><li>Tap 📷 to scan a sample homework page</li></ul></div>
+   <div class="card" style="margin-top:16px;background:var(--green-t)"><b>Like it?</b><p class="muted" style="margin:6px 0 12px">Unlock unlimited tutoring from $29/mo. Free for a day, full refund within 7 days.</p><a class="btn btn-amber btn-sm" href="#/pricing">Choose a plan</a></div>
+  </div>
+  <div>${chatHTML("tryChat",{sub:"Free session"})}</div>
+</div></section>`;
+
+Pages.student = () => `<section><div class="wrap" id="stu">
+  <div class="card" style="max-width:460px;margin:0 auto;text-align:center"><div class="avatar" style="margin:0 auto 12px;width:56px;height:56px;font-size:20px">SB</div><h2>Student login</h2><p class="muted">Enter your 4-digit PIN. <b>Demo: any 4 digits</b></p>
+   <div class="pin">${[0,1,2,3].map(()=>"<span></span>").join("")}</div>
+   <div class="pad">${[1,2,3,4,5,6,7,8,9,"⌫",0,"→"].map(k=>`<button data-k="${k}">${k}</button>`).join("")}</div>
+  </div></div></section>`;
+function bindStudent(){const st=$("#stu");if(!st||!st.querySelector(".pad"))return;let pin="";const cells=st.querySelectorAll(".pin span");
+ const draw=()=>cells.forEach((c,i)=>{c.textContent=pin[i]?"•":"";c.classList.toggle("f",!!pin[i])});
+ st.querySelector(".pad").onclick=e=>{const k=e.target.dataset.k;if(k===undefined)return;if(k==="⌫")pin=pin.slice(0,-1);else if(k==="→"){if(pin.length===4)studentDash();return}else if(pin.length<4)pin+=k;draw();if(pin.length===4)setTimeout(studentDash,350)}}
+function studentDash(){$("#stu").innerHTML=`
+ <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px"><div><div class="eyebrow" style="margin:0">Welcome back</div><h1 style="margin:4px 0">Hey Maya! 👋</h1></div><div class="streak">${["M","T","W","T","F","S","S"].map((d,i)=>`<i class="${i<5?"on":""}">${i<5?"🔥":d}</i>`).join("")}</div></div>
+ ${note("A student home screen with a streak and 'pick up where you left off' gives kids a reason to come back daily. That's what keeps families subscribed.")}
+ <div class="grid g3" style="margin-top:22px">
+  <div class="card"><div class="muted" style="font-size:13px">Learning streak</div><div class="kpi">5 days 🔥</div></div>
+  <div class="card"><div class="muted" style="font-size:13px">Quizzes this week</div><div class="kpi">4</div></div>
+  <div class="card"><div class="muted" style="font-size:13px">Next up</div><div style="font-weight:700;margin-top:10px">Percent problems</div></div>
+ </div>
+ <h3 style="margin-top:30px">Pick up where you left off</h3>
+ <div class="grid g3">${["ms-math","ms-ela","ms-sci"].map((id,i)=>{const s=subj(id);return `<a class="card subj" href="#/subject/${id}?quiz"><div class="ico" style="background:${s.col}">${s.ico}</div><h3>${s.name}</h3><div class="muted" style="font-size:14px">Chapter ${i+2}: ${s.topics[i+1]}</div><div class="progress" style="margin:4px 0"><i style="width:${[72,58,35][i]}%;background:var(--green)"></i></div><span class="go">Practice quiz →</span></a>`}).join("")}</div>
+ <div style="margin-top:28px">${chatHTML("stuChat",{sub:"Your tutor"})}</div>
+ <p class="muted center" style="font-size:13px;margin-top:12px">Sample student and data for illustration.</p>`;
+ initChat("stuChat",[`Welcome back, Maya! Last time we worked on two-step equations. 💪`,`Want to warm up with one? Try typing <b>4x + 6 = 30</b>.`]);}
+
+Pages.faq = () => `<section><div class="wrap" style="max-width:820px">
+  <div class="center"><div class="eyebrow">FAQ</div><h1>Questions parents ask</h1></div>
+  ${note("Real questions with real answers, marked up so Google and AI assistants (ChatGPT, Perplexity, Gemini) can quote Study Buddy Texas directly.")}
+  <div style="margin-top:28px">${FAQ.map(f=>`<details><summary>${f[0]}</summary><p>${f[1]}</p></details>`).join("")}</div>
+  <div class="card center" style="margin-top:24px"><b>Still have a question?</b><p class="muted" style="margin:6px 0 0">Email a real person at <a href="mailto:support@studybuddytx.com">support@studybuddytx.com</a>. We reply by the next business day.</p></div>
+</div></section>`;
+
+Pages.about = () => `<section><div class="wrap grid g2" style="gap:48px;align-items:center">
+  <div class="slot" style="min-height:380px">Founder photo<br><span style="font-weight:500">owner to supply</span></div>
+  <div><div class="eyebrow">About Study Buddy Texas</div><h1>Built for Texas kids, by a Texas founder</h1>
+   <p class="lead">Too many Texas families pay $60 to $100 a session for tutoring their kids only get once a week. Study Buddy Texas gives every family a patient, always-available tutor tuned to the same TEKS standards students learn in class.</p>
+   <p><b>[Founder name]</b> · [Texas city] · [background, to confirm with owner]</p>
+   ${note("Every placeholder in brackets needs the owner's real details. Nothing here is invented.")}
+  </div></div></section><section><div class="wrap">${finalCTA()}</div></section>`;
+
+Pages.notfound = () => `<section><div class="wrap center"><h1>Page not found</h1><p class="lead">Let's get you back on track.</p><a class="btn btn-green" href="#/">Go home</a></div></section>`;
+
+/* ---------------- router ---------------- */
+const TITLES={"":"AI Tutor for Texas Students, Grades 6–12",subjects:"All 14 TEKS Subjects",how:"How It Works",pricing:"Pricing from $29/mo",parents:"Parent Dashboard",try:"Try a Free Session",student:"Student Login",faq:"FAQ",about:"About"};
+function route(){
+  const h=location.hash.replace(/^#\/?/,""); const [path,query]=h.split("?"); const parts=path.split("/");
+  const key=parts[0]||"";
+  let html;
+  if(key==="")html=Pages.home();
+  else if(key==="subject")html=Pages.subject(parts[1],query);
+  else if(Pages[key])html=Pages[key]();
+  else html=Pages.notfound();
+  app.innerHTML=html;
+  const s=key==="subject"&&subj(parts[1]);
+  document.title="Study Buddy Texas | "+(s?(s.level==="ms"?"Middle School "+s.name:s.name)+" Tutoring for Texas Students":TITLES[key]||"Page not found");
+  document.querySelectorAll(".navlinks a").forEach(a=>a.classList.toggle("active",a.getAttribute("href")==="#/"+key));
+  if(key==="")initChat("heroChat");
+  if(key==="try")initChat("tryChat");
+  bindCalc();bindSubjects();bindPricing();bindParents();bindStudent();
+  if(s){runQuiz(s);if(query==="quiz")setTimeout(()=>$("#quiz")&&$("#quiz").scrollIntoView({behavior:"smooth",block:"center"}),80)}
+  if(!(s&&query==="quiz"))window.scrollTo(0,0);
+}
+$("#f-ms").innerHTML=SUBJECTS.filter(s=>s.level==="ms").map(s=>`<a href="#/subject/${s.id}">Middle School ${s.name}</a>`).join("");
+$("#f-hs").innerHTML=SUBJECTS.filter(s=>s.level==="hs").map(s=>`<a href="#/subject/${s.id}">${s.name}</a>`).join("");
+window.addEventListener("hashchange",route);route();
+</script>
+</body>
+</html>
